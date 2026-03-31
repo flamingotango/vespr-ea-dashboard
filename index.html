@@ -272,9 +272,58 @@
   /* Animations */
   @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
   .fade-up{animation:fadeUp .4s ease forwards;}
+
+  /* ── Loading Screen ── */
+  .loader-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .4s ease,visibility .4s ease;}
+  .loader-screen.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+  .loader-logo{display:flex;align-items:center;gap:16px;margin-bottom:40px;opacity:0;animation:loaderFadeIn .6s ease .2s forwards;}
+  .loader-mark{width:56px;height:56px;background:linear-gradient(135deg,var(--accent),#a78bfa);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;letter-spacing:1px;color:#fff;box-shadow:0 0 40px rgba(124,92,252,.3);}
+  .loader-name{font-size:28px;font-weight:900;letter-spacing:-.5px;color:var(--text);}
+  .loader-name span{color:var(--accent2);font-weight:400;font-size:14px;display:block;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+
+  .loader-bar-wrap{width:280px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;opacity:0;animation:loaderFadeIn .4s ease .5s forwards;}
+  .loader-bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#a78bfa,var(--green));border-radius:2px;animation:loaderFill 2s ease .6s forwards;}
+
+  .loader-status{margin-top:20px;font-size:12px;color:var(--text3);font-weight:500;letter-spacing:.5px;opacity:0;animation:loaderFadeIn .4s ease .7s forwards;}
+  .loader-status span{transition:opacity .2s;}
+
+  .loader-particles{position:absolute;width:100%;height:100%;overflow:hidden;pointer-events:none;}
+  .loader-particle{position:absolute;width:4px;height:4px;background:var(--accent);border-radius:50%;opacity:0;}
+  .loader-particle:nth-child(1){left:20%;top:30%;animation:particleFloat 3s ease infinite .0s;}
+  .loader-particle:nth-child(2){left:70%;top:20%;animation:particleFloat 3s ease infinite .3s;}
+  .loader-particle:nth-child(3){left:40%;top:70%;animation:particleFloat 3s ease infinite .6s;}
+  .loader-particle:nth-child(4){left:80%;top:60%;animation:particleFloat 3s ease infinite .9s;}
+  .loader-particle:nth-child(5){left:15%;top:80%;animation:particleFloat 3s ease infinite 1.2s;}
+  .loader-particle:nth-child(6){left:60%;top:45%;animation:particleFloat 3s ease infinite .4s;background:var(--accent2);}
+  .loader-particle:nth-child(7){left:35%;top:15%;animation:particleFloat 3s ease infinite .8s;background:var(--green);}
+  .loader-particle:nth-child(8){left:85%;top:35%;animation:particleFloat 3s ease infinite 1.1s;background:var(--accent2);}
+
+  @keyframes loaderFadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes loaderFill{0%{width:0;}40%{width:45%;}70%{width:72%;}90%{width:92%;}100%{width:100%;}}
+  @keyframes particleFloat{0%{opacity:0;transform:translateY(0) scale(0);}20%{opacity:.4;transform:translateY(-20px) scale(1);}80%{opacity:.2;transform:translateY(-60px) scale(.6);}100%{opacity:0;transform:translateY(-80px) scale(0);}}
 </style>
 </head>
 <body>
+
+<!-- Loading Screen -->
+<div class="loader-screen" id="loaderScreen">
+  <div class="loader-particles">
+    <div class="loader-particle"></div>
+    <div class="loader-particle"></div>
+    <div class="loader-particle"></div>
+    <div class="loader-particle"></div>
+    <div class="loader-particle"></div>
+    <div class="loader-particle"></div>
+    <div class="loader-particle"></div>
+    <div class="loader-particle"></div>
+  </div>
+  <div class="loader-logo">
+    <div class="loader-mark">V</div>
+    <div class="loader-name">VESPR OS<span>AI Executive Assistant</span></div>
+  </div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div class="loader-status" id="loaderStatus">Initializing system...</div>
+</div>
 
 <!-- Sidebar -->
 <div class="sidebar">
@@ -366,7 +415,7 @@
           </div>
 
           <div style="font-size:14px;line-height:1.8;color:var(--text);">
-            <p>Today is a <strong style="color:var(--green);">big opportunity day</strong> across both businesses. On the <strong>real estate side</strong>, Mike Torres completed the Muirland St inspection and flagged a foundation repair that gives you leverage to renegotiate $15-20K off the purchase price. Meanwhile, Lisa Park got your <strong>DSCR loan approved at 7.1%</strong> for the Birwood portfolio - docs are ready for your signature to lock the rate.</p>
+            <p>Today is a <strong style="color:var(--green);">big opportunity day</strong>. On the <strong>real estate side</strong>, Mike Torres completed the Muirland St inspection and flagged a foundation repair that gives you leverage to renegotiate $15-20K off the purchase price. Meanwhile, Lisa Park got your <strong>DSCR loan approved at 7.1%</strong> for the Birwood portfolio - docs are ready for your signature to lock the rate.</p>
 
             <p style="margin-top:12px;">On the <strong>AI agency side</strong>, Jason Rivera's lead gen agent needs a quick update this morning - easy fix, and a great chance to set up proactive monitoring so it stays bulletproof going forward. Fast turnaround here deepens the relationship with a $5K/month retainer client.</p>
 
@@ -878,7 +927,7 @@
 const calEvents = [
   {id:0, hour:7, time:"7:00 - 7:45 AM", title:"Morning Routine", type:"personal", meta:"Gym + Journaling", detail:"Protected morning block. AI keeps this clear automatically.", attendees:[], location:"Home", canReschedule:true},
   {id:1, hour:8, time:"8:00 - 8:30 AM", title:"Daily Briefing Review", type:"focus", meta:"Review AI briefing, approve drafts, set priorities", detail:"Review and approve all AI-drafted communications from overnight scan. Set priorities for the day.", attendees:[], location:"Office", canReschedule:false},
-  {id:2, hour:9, time:"9:00 - 9:30 AM", title:"Team Standup", type:"meeting", meta:"RE + AI team sync / Zoom", detail:"Daily sync across both businesses. Review blockers on active deals, AI client projects, and content pipeline.", attendees:["Tyler Morris","David Park","Jason Rivera"], location:"Zoom", canReschedule:true},
+  {id:2, hour:9, time:"9:00 - 9:30 AM", title:"Team Standup", type:"meeting", meta:"RE + AI team sync / Zoom", detail:"Daily sync. Review blockers on active deals, AI client projects, and content pipeline.", attendees:["Tyler Morris","David Park","Jason Rivera"], location:"Zoom", canReschedule:true},
   {id:3, hour:9.5, time:"9:30 - 10:00 AM", title:"Lisa Park - Lender Call", type:"call", meta:"DSCR loan docs for Birwood portfolio / Phone", detail:"Review and sign DSCR loan documents approved at 7.1% for the Birwood portfolio. Covers 4 Section 8 properties. Rate lock expires today.", attendees:["Lisa Park"], location:"Phone", canReschedule:false, aiNote:"Rate lock expires today - do not reschedule"},
   {id:4, hour:10, time:"10:00 - 11:00 AM", title:"Deep Work - AI Agent Build", type:"focus", meta:"Client agent architecture / Focus block / Protected by AI", detail:"Dedicated focus time for building AI agent infrastructure for client projects. VESPR blocks all incoming meeting requests during this window.", attendees:[], location:"Office", canReschedule:true},
   {id:5, hour:11, time:"11:00 - 11:30 AM", title:"Chris Baldwin - Investor Discovery Call", type:"call", meta:"New Section 8 investor / $200K allocation / Zoom", detail:"Discovery call with Chris Baldwin. He wants to invest $200K in Detroit Section 8 through the Buyers Club. Walk him through the model, current deal flow, and projected returns.", attendees:["Chris Baldwin"], location:"Zoom", canReschedule:true, aiNote:"AI scheduled today based on Chris's email"},
@@ -1546,6 +1595,32 @@ function goToConvo(msgId) {
   renderInbox('all');
   setTimeout(() => selectMessage(msgId), 150);
 }
+
+// ── Loading Screen ──
+const loaderMessages = [
+  'Initializing system...',
+  'Connecting channels...',
+  'Scanning inbox...',
+  'Analyzing messages with AI...',
+  'Scoring urgency...',
+  'Drafting replies...',
+  'Building daily briefing...',
+  'System ready.'
+];
+let loaderIdx = 0;
+const loaderStatus = document.getElementById('loaderStatus');
+const loaderInterval = setInterval(() => {
+  loaderIdx++;
+  if (loaderIdx < loaderMessages.length) {
+    loaderStatus.textContent = loaderMessages[loaderIdx];
+  } else {
+    clearInterval(loaderInterval);
+  }
+}, 300);
+
+setTimeout(() => {
+  document.getElementById('loaderScreen').classList.add('hidden');
+}, 2500);
 
 // ── Init ──
 renderInbox();
