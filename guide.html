@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VESPR OS - AI Executive Assistant Setup Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&display=swap');
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page-break { page-break-before: always; }
+    .no-print { display: none; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D48B;
+    --gold-dark: #A68A3E;
+    --gold-dim: rgba(201, 168, 76, 0.08);
+    --gold-dim2: rgba(201, 168, 76, 0.15);
+    --black: #0A0A0A;
+    --black2: #1A1A1A;
+    --gray1: #2A2A2A;
+    --gray2: #4A4A4A;
+    --gray3: #7A7A7A;
+    --gray4: #AAAAAA;
+    --white: #F5F3EE;
+    --white2: #EDEADF;
+    --bg: #FDFCF8;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--black);
+    line-height: 1.7;
+    font-size: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── Cover Page ── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 20px;
+  }
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-dim);
+    border: 1px solid var(--gold);
+    color: var(--gold-dark);
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+  }
+  .cover h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: var(--black);
+  }
+  .cover h1 span { color: var(--gold); }
+  .cover-sub {
+    font-size: 18px;
+    color: var(--gray2);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+  }
+  .cover-meta {
+    font-size: 12px;
+    color: var(--gray3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .cover-line {
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    margin: 24px auto;
+    border-radius: 2px;
+  }
+
+  /* ── Typography ── */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin: 64px 0 8px;
+    color: var(--black);
+    line-height: 1.2;
+  }
+  h2 .step-num {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    margin-right: 14px;
+    vertical-align: middle;
+  }
+  h2 .section-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 36px 0 12px;
+    color: var(--black);
+    letter-spacing: -0.3px;
+  }
+  h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 24px 0 8px;
+    color: var(--black2);
+  }
+  p { margin-bottom: 16px; color: var(--gray1); }
+  .lead { font-size: 17px; color: var(--gray2); line-height: 1.7; margin-bottom: 24px; }
+
+  /* ── Gold Divider ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 48px 0;
+  }
+
+  /* ── Callout Boxes ── */
+  .callout {
+    background: var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+  .callout-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold-dark);
+    margin-bottom: 8px;
+  }
+  .callout p { margin-bottom: 8px; color: var(--gray1); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .warning {
+    background: #FFF8F0;
+    border-left: 3px solid #E67E22;
+  }
+  .warning .callout-title { color: #E67E22; }
+
+  .tip {
+    background: #F0FFF4;
+    border-left: 3px solid #27AE60;
+  }
+  .tip .callout-title { color: #27AE60; }
+
+  /* ── Code Blocks ── */
+  code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    background: #F0EDE4;
+    padding: 2px 8px;
+    border-radius: 5px;
+    color: var(--black2);
+  }
+  pre {
+    background: var(--black);
+    color: #E0DDD4;
+    padding: 24px;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    border: 1px solid var(--gray1);
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+  .code-label {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: -1px;
+    position: relative;
+    top: 1px;
+  }
+
+  /* ── Numbered Steps ── */
+  .steps { counter-reset: step; margin: 20px 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    min-width: 32px;
+    height: 32px;
+    background: var(--gold);
+    color: var(--black);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content { flex: 1; }
+  .step-content p { margin-bottom: 8px; }
+
+  /* ── Checklists ── */
+  .checklist { list-style: none; margin: 16px 0; }
+  .checklist li {
+    padding: 10px 0 10px 36px;
+    position: relative;
+    border-bottom: 1px solid #EDE9DD;
+    color: var(--gray1);
+  }
+  .checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gold);
+    border-radius: 5px;
+  }
+
+  /* ── Cost Table ── */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .cost-table th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--black);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .cost-table th:first-child { border-radius: 8px 0 0 0; }
+  .cost-table th:last-child { border-radius: 0 8px 0 0; }
+  .cost-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #EDE9DD;
+  }
+  .cost-table tr:last-child td {
+    font-weight: 700;
+    border-top: 2px solid var(--gold);
+    background: var(--gold-dim);
+  }
+
+  /* ── Architecture Diagram ── */
+  .arch-box {
+    background: var(--white);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 24px 0;
+    text-align: center;
+  }
+  .arch-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+  }
+  .arch-item {
+    background: var(--black);
+    color: var(--white);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .arch-item.gold {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .arch-arrow {
+    font-size: 20px;
+    color: var(--gold);
+    margin: 8px 0;
+  }
+
+  /* ── Section Intro ── */
+  .section-intro {
+    background: var(--white);
+    border: 1px solid #EDE9DD;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 16px 0 28px;
+  }
+
+  /* ── Footer ── */
+  .guide-footer {
+    text-align: center;
+    padding: 48px 0 64px;
+    border-top: 1px solid #EDE9DD;
+    margin-top: 64px;
+  }
+  .guide-footer p { color: var(--gray3); font-size: 13px; }
+
+  /* ── Prompt Blocks ── */
+  .prompt-block {
+    background: #FFFDF5;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+    position: relative;
+  }
+  .prompt-label {
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 2px 12px;
+    border-radius: 4px;
+  }
+  .prompt-block p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gray1);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* ── TOC ── */
+  .toc { margin: 32px 0; }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #EDE9DD;
+    text-decoration: none;
+    color: var(--black);
+    transition: all 0.15s;
+  }
+  .toc-item:hover { padding-left: 8px; color: var(--gold-dark); }
+  .toc-num {
+    width: 32px;
+    height: 32px;
+    background: var(--gold);
+    color: var(--black);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+  .toc-title { font-weight: 600; font-size: 15px; flex: 1; }
+  .toc-page { color: var(--gray3); font-size: 13px; }
+
+  /* ── CTA Block ── */
+  .cta-block {
+    background: var(--black);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 40px 0;
+    text-align: center;
+  }
+  .cta-block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--white);
+    margin: 0 0 10px;
+  }
+  .cta-block p {
+    color: var(--gray4);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 16px 40px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .cta-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
+  }
+  .cta-sub {
+    font-size: 11px;
+    color: var(--gray3);
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════ -->
+<!-- COVER PAGE -->
+<!-- ════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">Setup Guide</div>
+  <h1>Build Your AI<br><span>Executive Assistant</span></h1>
+  <p class="cover-sub">The complete step-by-step system for replacing your EA with an AI that manages your inbox, calendar, and communications across every channel. Zero coding experience required.</p>
+  <div class="cover-line"></div>
+  <div class="cover-meta">By Luke Fontaine</div>
+  <div style="margin-top:40px;">
+    <a href="https://calendly.com/blackboxalchemist/ai-leverage-audit" class="cta-btn" style="font-size:12px;padding:14px 32px;">Book a Free AI Leverage Call</a>
+    <div class="cta-sub">Want this built for you? Let's talk.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Contents</span>What's Inside</h2>
+<div class="toc">
+  <div class="toc-item"><div class="toc-num">1</div><div class="toc-title">What You're Building</div></div>
+  <div class="toc-item"><div class="toc-num">2</div><div class="toc-title">Tools You Need + Cost Breakdown</div></div>
+  <div class="toc-item"><div class="toc-num">3</div><div class="toc-title">Setting Up Claude Pro Max</div></div>
+  <div class="toc-item"><div class="toc-num">4</div><div class="toc-title">Installing Claude Code (Your AI Builder)</div></div>
+  <div class="toc-item"><div class="toc-num">5</div><div class="toc-title">Setting Up n8n (Your Automation Engine)</div></div>
+  <div class="toc-item"><div class="toc-num">6</div><div class="toc-title">Connecting Your Email</div></div>
+  <div class="toc-item"><div class="toc-num">7</div><div class="toc-title">Connecting Slack</div></div>
+  <div class="toc-item"><div class="toc-num">8</div><div class="toc-title">Connecting WhatsApp</div></div>
+  <div class="toc-item"><div class="toc-num">9</div><div class="toc-title">Connecting iMessage</div></div>
+  <div class="toc-item"><div class="toc-num">10</div><div class="toc-title">Connecting Google Calendar</div></div>
+  <div class="toc-item"><div class="toc-num">11</div><div class="toc-title">Building the AI Brain (Classification + Drafts)</div></div>
+  <div class="toc-item"><div class="toc-num">12</div><div class="toc-title">Training Your AI On Your Voice and Business</div></div>
+  <div class="toc-item"><div class="toc-num">13</div><div class="toc-title">Deploying the Dashboard</div></div>
+  <div class="toc-item"><div class="toc-num">14</div><div class="toc-title">Daily Workflow: How to Use It</div></div>
+  <div class="toc-item"><div class="toc-num">15</div><div class="toc-title">Troubleshooting + FAQ</div></div>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 1 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 1</span><span class="step-num">1</span> What You're Building</h2>
+
+<p class="lead">You're building an AI system that reads every message across every platform you use, sorts them by urgency, drafts replies in your voice, and presents everything in a single dashboard each morning. You review, approve, and move on. Five minutes instead of three hours.</p>
+
+<h3>The System Architecture</h3>
+<div class="arch-box">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--gold-dark);margin-bottom:16px;">How it all connects</div>
+  <div class="arch-row">
+    <div class="arch-item">Gmail</div>
+    <div class="arch-item">Slack</div>
+    <div class="arch-item">WhatsApp</div>
+    <div class="arch-item">iMessage</div>
+    <div class="arch-item">Google Calendar</div>
+  </div>
+  <div class="arch-arrow">&#8595;</div>
+  <div class="arch-row">
+    <div class="arch-item gold">n8n (Automation Engine)</div>
+  </div>
+  <div class="arch-arrow">&#8595;</div>
+  <div class="arch-row">
+    <div class="arch-item gold">Claude AI (The Brain)</div>
+  </div>
+  <div class="arch-arrow">&#8595;</div>
+  <div class="arch-row">
+    <div class="arch-item">VESPR OS Dashboard</div>
+  </div>
+</div>
+
+<p>Here's the flow: your messages come in across all channels. n8n catches every one of them and sends them to Claude. Claude reads the message, scores it by urgency (0-100), writes AI notes analyzing the context, and drafts a reply in your voice. Everything gets pushed to your dashboard where you review, edit if needed, and approve. One click sends the reply back through the original channel.</p>
+
+<div class="callout">
+  <div class="callout-title">What this replaces</div>
+  <p>A full-time executive assistant costs $4,000-$8,000/month. This system costs under $300/month and works 24/7. It never misses a message, never forgets context, and gets smarter the more you use it.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 2 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 2</span><span class="step-num">2</span> Tools You Need + Cost Breakdown</h2>
+
+<p class="lead">Here's everything you need to get this running. No hidden tools, no surprise costs. Most of these have free tiers to start.</p>
+
+<table class="cost-table">
+  <thead>
+    <tr><th>Tool</th><th>What It Does</th><th>Cost/Month</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Claude Pro Max</strong></td><td>The AI brain that reads, classifies, and drafts</td><td>$100</td></tr>
+    <tr><td><strong>Claude Code</strong></td><td>CLI tool to build automations with Claude</td><td>Included with Pro Max</td></tr>
+    <tr><td><strong>n8n Cloud</strong></td><td>Automation engine connecting all your channels</td><td>$24 (Starter plan)</td></tr>
+    <tr><td><strong>Google Workspace</strong></td><td>Gmail + Google Calendar APIs</td><td>$7 (or free with personal Gmail)</td></tr>
+    <tr><td><strong>Slack</strong></td><td>Team communication channel</td><td>Free tier works</td></tr>
+    <tr><td><strong>WhatsApp Business API</strong></td><td>WhatsApp message integration</td><td>Free via n8n webhook</td></tr>
+    <tr><td><strong>Hosting (Dashboard)</strong></td><td>Vercel or Netlify for your dashboard</td><td>Free</td></tr>
+    <tr><td colspan="2"><strong>Total Monthly Cost</strong></td><td><strong>~$131/month</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>Accounts to Create Before You Start</h3>
+<ul class="checklist">
+  <li><strong>Anthropic account</strong> at claude.ai - sign up for the Pro Max plan ($100/month)</li>
+  <li><strong>n8n Cloud account</strong> at n8n.io - sign up for the Starter plan</li>
+  <li><strong>Google Cloud Console</strong> account at console.cloud.google.com - for Gmail and Calendar API keys</li>
+  <li><strong>Slack workspace</strong> - your existing one or create a new one at slack.com</li>
+  <li><strong>WhatsApp Business account</strong> - download WhatsApp Business app on your phone</li>
+  <li><strong>GitHub account</strong> at github.com - free, for hosting your dashboard code</li>
+  <li><strong>Vercel account</strong> at vercel.com - free, for deploying the dashboard</li>
+</ul>
+
+<div class="callout tip">
+  <div class="callout-title">Time estimate</div>
+  <p>If you follow every step in this guide, you can have the entire system running in one afternoon (3-5 hours). Most of that time is waiting for API approvals and copying configurations. The AI does the heavy lifting.</p>
+</div>
+
+<div class="cta-block">
+  <h3>Want this done for you?</h3>
+  <p>My team builds AI systems like this every week. We'll set up your entire EA, connect all your channels, train it on your voice, and have it running in 48 hours. No technical work on your end.</p>
+  <a href="https://calendly.com/blackboxalchemist/ai-leverage-audit" class="cta-btn">Book Your AI Leverage Call</a>
+  <div class="cta-sub">Free 30-minute strategy call. No obligation.</div>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 3 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 3</span><span class="step-num">3</span> Setting Up Claude Pro Max</h2>
+
+<p class="lead">Claude is the brain of your entire system. It reads messages, understands context, scores urgency, and writes draft replies in your voice. The Pro Max plan gives you Claude Code, which is what you'll use to build everything.</p>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Go to claude.ai and create an account</strong></p>
+      <p>Use your primary email. This will be your AI command center.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Subscribe to the Pro Max plan ($100/month)</strong></p>
+      <p>Click your profile icon in the bottom left, then "Upgrade Plan," then select Pro Max. This is the plan that gives you access to Claude Code, which is the tool you'll use to build and configure everything. The regular Pro plan ($20/month) does not include Claude Code.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Get your API key</strong></p>
+      <p>Go to <code>console.anthropic.com</code>. Click "API Keys" in the left sidebar. Click "Create Key." Name it something like "VESPR-EA". Copy the key and save it somewhere safe. You will need this key later when connecting n8n to Claude. Never share this key publicly.</p>
+    </div>
+  </div>
+</div>
+
+<div class="callout warning">
+  <div class="callout-title">Important</div>
+  <p>Your API key is like a password. Anyone who has it can use your Claude account and run up charges. Store it in a password manager or secure note. Never paste it into public code, social media, or shared documents.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 4 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 4</span><span class="step-num">4</span> Installing Claude Code</h2>
+
+<p class="lead">Claude Code is a command-line tool that lets you talk to Claude directly from your computer's terminal. Instead of typing in a chat window, you give Claude instructions and it writes code, creates files, and builds automations for you. Think of it as having a developer sitting next to you who does exactly what you ask.</p>
+
+<h3>What is a Terminal?</h3>
+<p>The terminal (also called command line) is a text-based interface on your computer. Instead of clicking buttons, you type commands. On Mac, it's the app called "Terminal." On Windows, it's "Command Prompt" or "PowerShell."</p>
+
+<h3>Installation Steps</h3>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Open your Terminal</strong></p>
+      <p><strong>On Mac:</strong> Press <code>Cmd + Space</code>, type "Terminal", press Enter.</p>
+      <p><strong>On Windows:</strong> Press <code>Win + R</code>, type "cmd", press Enter.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Install Node.js (if you don't have it)</strong></p>
+      <p>Claude Code needs Node.js to run. Check if you have it by typing:</p>
+      <pre><code>node --version</code></pre>
+      <p>If you see a version number (like v20.x.x), you're good. If you see an error, go to <code>nodejs.org</code>, download the LTS version, and install it. Then restart your terminal.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Install Claude Code</strong></p>
+      <p>Type this command in your terminal and press Enter:</p>
+      <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+      <p>Wait for it to finish. You'll see some text scrolling. When you get back to the prompt, it's done.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Launch Claude Code</strong></p>
+      <p>Navigate to a folder where you want to build your project, then start Claude Code:</p>
+      <pre><code>mkdir ~/vespr-ea
+cd ~/vespr-ea
+claude</code></pre>
+      <p>The first time you run it, Claude Code will ask you to log in with your Anthropic account. Follow the prompts to authenticate. Once logged in, you'll see the Claude Code interface where you can type natural language instructions.</p>
+    </div>
+  </div>
+</div>
+
+<h3>Your First Claude Code Command</h3>
+<p>Try this to confirm everything is working:</p>
+
+<div class="prompt-block">
+  <div class="prompt-label">Type this into Claude Code</div>
+  <p>Create a file called test.txt that says "VESPR EA is online" and confirm it was created.</p>
+</div>
+
+<p>Claude will create the file and confirm. If that works, you're ready to build. Delete the test file and move on.</p>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 5 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 5</span><span class="step-num">5</span> Setting Up n8n</h2>
+
+<p class="lead">n8n is the automation engine that connects all your channels to Claude. Think of it as the plumbing. When a new email arrives, n8n catches it, sends it to Claude for analysis, and pushes the result to your dashboard. No code required - it's all visual drag-and-drop.</p>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Create your n8n Cloud account</strong></p>
+      <p>Go to <code>n8n.io</code> and click "Get Started Free." Sign up with your email. Choose the Starter plan ($24/month). This gives you enough workflow executions for a personal EA system.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Log into your n8n dashboard</strong></p>
+      <p>Once your account is created, you'll land on the n8n workflow editor. This is where you'll build all your automations. The interface shows a canvas where you drag nodes (each node is an action, like "read email" or "send to Claude").</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Add your Claude API credentials to n8n</strong></p>
+      <p>Click the gear icon (bottom left), then "Credentials." Click "Add Credential" and search for "Anthropic." Paste the API key you saved from Section 3. Name it "Claude-VESPR." Click Save.</p>
+    </div>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="callout-title">Why n8n and not Zapier or Make?</div>
+  <p>n8n gives you full control, self-hosting options, and no per-task pricing that blows up when your volume grows. At scale, Zapier would cost 10-20x more. n8n also handles complex branching logic and AI nodes natively.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 6 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 6</span><span class="step-num">6</span> Connecting Your Email</h2>
+
+<p class="lead">Email is usually the highest-volume channel. This section connects Gmail to n8n so every incoming email gets captured and sent to Claude for analysis.</p>
+
+<h3>Setting Up Gmail API Access</h3>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Go to Google Cloud Console</strong></p>
+      <p>Open <code>console.cloud.google.com</code>. Sign in with the Gmail account you want to monitor. Click "Select a project" at the top, then "New Project." Name it "VESPR-EA" and click Create.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Enable the Gmail API</strong></p>
+      <p>In your project, go to "APIs & Services" then "Library." Search for "Gmail API" and click Enable. Then search for "Google Calendar API" and enable that too (you'll need it later).</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Create OAuth credentials</strong></p>
+      <p>Go to "APIs & Services" then "Credentials." Click "Create Credentials" then "OAuth client ID." Select "Web application." Under Authorized redirect URIs, add your n8n OAuth callback URL (found in n8n under Settings > Credentials when you add a Google credential). Click Create. Copy the Client ID and Client Secret.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Connect Gmail in n8n</strong></p>
+      <p>In n8n, create a new workflow. Add a "Gmail Trigger" node. Click to configure it. Add a new Google credential using the Client ID and Secret from above. Authorize the connection (Google will ask you to log in and grant access). Set the trigger to fire on "New Email Received." Save.</p>
+    </div>
+  </div>
+</div>
+
+<h3>Building the Email Processing Workflow</h3>
+<p>Now create the workflow that processes each email through Claude. In n8n, your workflow should look like this:</p>
+
+<p><strong>Gmail Trigger</strong> &#8594; <strong>Anthropic (Claude) Node</strong> &#8594; <strong>Webhook (Dashboard)</strong></p>
+
+<p>For the Anthropic node, use this prompt configuration:</p>
+
+<div class="prompt-block">
+  <div class="prompt-label">Claude Node System Prompt</div>
+  <p>You are an AI executive assistant for [YOUR NAME]. You analyze incoming emails and produce a JSON response with the following fields: urgency_score (0-100), priority ("urgent", "action", or "fyi"), summary (1-2 sentences), ai_notes (array of 3-5 strategic observations), draft_reply (a response written in [YOUR NAME]'s voice - direct, decisive, no fluff). Consider the sender's relationship to the business, any deadlines mentioned, financial implications, and whether a response is needed today.</p>
+</div>
+
+<div class="callout tip">
+  <div class="callout-title">Pro tip</div>
+  <p>Add examples of your actual emails and how you'd respond to the system prompt. The more examples Claude has of your voice and decision-making style, the better the drafts will be. We cover this in detail in Section 12.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 7 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 7</span><span class="step-num">7</span> Connecting Slack</h2>
+
+<p class="lead">Slack messages from your team get pulled into the same unified inbox. Here's how to connect it.</p>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Create a Slack App</strong></p>
+      <p>Go to <code>api.slack.com/apps</code>. Click "Create New App" then "From scratch." Name it "VESPR EA" and select your workspace. Click Create App.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Set permissions (OAuth Scopes)</strong></p>
+      <p>In the sidebar, click "OAuth & Permissions." Scroll to "Bot Token Scopes" and add: <code>channels:history</code>, <code>channels:read</code>, <code>chat:write</code>, <code>im:history</code>, <code>im:read</code>, <code>users:read</code>. These let your app read messages and send replies.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Install the app to your workspace</strong></p>
+      <p>Click "Install to Workspace" at the top of the OAuth page. Authorize it. Copy the "Bot User OAuth Token" that appears. You'll need this for n8n.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Enable Event Subscriptions</strong></p>
+      <p>In the sidebar, click "Event Subscriptions." Turn it on. For the Request URL, you'll use an n8n webhook URL. In n8n, add a "Webhook" node, copy its URL, and paste it here. Under "Subscribe to bot events," add <code>message.channels</code> and <code>message.im</code>. Save.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Build the Slack workflow in n8n</strong></p>
+      <p>Create a new workflow: <strong>Webhook (Slack events)</strong> &#8594; <strong>Filter (ignore bot messages)</strong> &#8594; <strong>Anthropic (Claude) Node</strong> &#8594; <strong>Webhook (Dashboard)</strong>. Use the same Claude system prompt as email, but add "source: slack" to the context.</p>
+    </div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 8 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 8</span><span class="step-num">8</span> Connecting WhatsApp</h2>
+
+<p class="lead">WhatsApp is where many business conversations happen, especially with clients and partners. Here's how to pipe those messages into your EA.</p>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Set up WhatsApp Business API via Meta</strong></p>
+      <p>Go to <code>developers.facebook.com</code>. Create a Meta Developer account if you don't have one. Create a new App, select "Business" type. Add the "WhatsApp" product. You'll get a test phone number and API credentials to start.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Configure the webhook in n8n</strong></p>
+      <p>In n8n, add a Webhook node. Copy its URL. Back in the Meta Developer portal, go to WhatsApp > Configuration > Webhook. Paste the n8n webhook URL. Set the Verify Token to something unique (like "vespr-ea-2026"). Subscribe to "messages" events.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Build the WhatsApp workflow</strong></p>
+      <p>Same pattern: <strong>Webhook (WhatsApp)</strong> &#8594; <strong>Parse message body</strong> &#8594; <strong>Anthropic (Claude) Node</strong> &#8594; <strong>Webhook (Dashboard)</strong>. To send replies back, add a "WhatsApp Business Cloud" node at the end that fires when you approve a draft.</p>
+    </div>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="callout-title">Alternative: WhatsApp via n8n Community Node</div>
+  <p>If the official API feels complex, n8n has community nodes like "WhatsApp Web" that connect through a QR code scan, just like WhatsApp Web on your computer. This is simpler to set up but less reliable for production. Start here if you want to test quickly, then upgrade to the official API later.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 9 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 9</span><span class="step-num">9</span> Connecting iMessage</h2>
+
+<p class="lead">iMessage is the trickiest channel because Apple doesn't offer an official API. Here are two approaches depending on your comfort level.</p>
+
+<h3>Option A: BlueBubbles (Recommended)</h3>
+<p>BlueBubbles is an open-source app that runs on a Mac and exposes your iMessages through an API. This is the most reliable approach.</p>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Install BlueBubbles on a Mac</strong></p>
+      <p>Go to <code>bluebubbles.app</code> and download the server app. This needs to run on a Mac that stays on (can be an old Mac Mini or your main machine). Install it and sign in with your Apple ID.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Enable the API and webhooks</strong></p>
+      <p>In BlueBubbles settings, enable the REST API. Set up a webhook URL pointing to your n8n webhook node. BlueBubbles will send a payload every time you receive a new iMessage.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Build the iMessage workflow in n8n</strong></p>
+      <p>Same pattern as the others: <strong>Webhook (BlueBubbles)</strong> &#8594; <strong>Anthropic (Claude) Node</strong> &#8594; <strong>Webhook (Dashboard)</strong>. To send replies, use the BlueBubbles API to send messages back through iMessage.</p>
+    </div>
+  </div>
+</div>
+
+<h3>Option B: Manual Forwarding</h3>
+<p>If you don't want to run BlueBubbles, you can set up iMessage forwarding to your email. On your Mac, open Messages > Settings > iMessage > enable "Text Message Forwarding." Then forward those to your Gmail, where they'll be caught by your email workflow. This is less elegant but requires zero setup.</p>
+
+<div class="cta-block">
+  <h3>Getting stuck on the technical stuff?</h3>
+  <p>You're not alone. Channel integrations are the #1 place people hit friction. On the AI Leverage Call, I'll map out exactly which channels matter for your business and how to connect them without the headache.</p>
+  <a href="https://calendly.com/blackboxalchemist/ai-leverage-audit" class="cta-btn">Book Your AI Leverage Call</a>
+  <div class="cta-sub">I'll build a custom AI roadmap for your business. Free.</div>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 10 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 10</span><span class="step-num">10</span> Connecting Google Calendar</h2>
+
+<p class="lead">Your AI EA needs to see your calendar to schedule meetings, identify conflicts, and plan your day. This connection also powers the daily briefing's calendar section.</p>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Use the same Google Cloud project from Section 6</strong></p>
+      <p>You already enabled the Google Calendar API. Now go to n8n and add a "Google Calendar" node. Use the same Google OAuth credentials you created for Gmail. Authorize calendar access.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Create the daily calendar fetch workflow</strong></p>
+      <p>Create a new workflow with a <strong>Schedule Trigger</strong> (set to 6:00 AM daily) &#8594; <strong>Google Calendar node</strong> (Get Events, time range: today) &#8594; <strong>Anthropic (Claude) Node</strong> &#8594; <strong>Webhook (Dashboard)</strong>.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Configure the scheduling workflow</strong></p>
+      <p>For the "Schedule Meeting" feature, create a separate workflow: <strong>Webhook (from dashboard)</strong> &#8594; <strong>Google Calendar (Check availability)</strong> &#8594; <strong>Claude (Find 3 best times)</strong> &#8594; <strong>Gmail (Send invite email)</strong> &#8594; <strong>Google Calendar (Create hold)</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<div class="prompt-block">
+  <div class="prompt-label">Claude Prompt for Calendar Analysis</div>
+  <p>Here is my calendar for today: {{calendar_events}}. Analyze my day and produce: (1) a natural language briefing of my day as if you're my EA giving me a 90-second morning update, (2) identify any conflicts or tight transitions, (3) note which blocks are protected (deep work, personal) and should not be scheduled over, (4) suggest the 3 best open slots for a new 30-minute meeting.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 11 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 11</span><span class="step-num">11</span> Building the AI Brain</h2>
+
+<p class="lead">This is the core of the system. The AI Brain is a single Claude prompt that takes any incoming message and outputs a structured analysis with urgency score, notes, and a draft reply. Here's the complete prompt you'll use.</p>
+
+<h3>The Master Classification Prompt</h3>
+<p>This goes in the Anthropic node in every n8n workflow (email, Slack, WhatsApp, iMessage). It's the same prompt for all channels.</p>
+
+<div class="code-label">Master System Prompt</div>
+<pre><code>You are the AI Executive Assistant for [YOUR NAME].
+You manage communications across all channels for
+[BRIEF DESCRIPTION OF YOUR BUSINESSES].
+
+Your job is to analyze each incoming message and return
+a JSON object with these fields:
+
+{
+  "from": "sender name",
+  "source": "email | slack | whatsapp | sms",
+  "urgency_score": 0-100,
+  "priority": "urgent | action | fyi",
+  "subject": "short subject line",
+  "summary": "1-2 sentence summary",
+  "ai_notes": [
+    "strategic observation 1",
+    "strategic observation 2",
+    "strategic observation 3",
+    "recommendation"
+  ],
+  "urgency_reason": "why this urgency score",
+  "draft_reply": "response in [YOUR NAME]'s voice"
+}
+
+URGENCY SCORING GUIDE:
+- 90-100: Money on the table, deadlines today,
+  revenue-impacting situations
+- 70-89: Important business decisions, key
+  relationships, time-sensitive opportunities
+- 50-69: Needs a response today but not immediately
+- 20-49: Can wait 24-48 hours
+- 0-19: Informational only, no response needed
+
+VOICE GUIDELINES FOR DRAFT REPLIES:
+- Direct and decisive. No filler words.
+- Lead with the action or decision.
+- Keep it under 4 sentences when possible.
+- Use first name only for the greeting.
+- Never use em dashes. Use hyphens only.
+- Sound like a founder, not a customer service rep.
+
+BUSINESS CONTEXT:
+[INSERT YOUR BUSINESS DETAILS, KEY CLIENTS,
+ONGOING DEALS, TEAM MEMBERS, AND ANY CONTEXT
+THAT HELPS CLAUDE MAKE BETTER DECISIONS]</code></pre>
+
+<div class="callout tip">
+  <div class="callout-title">The more context, the better</div>
+  <p>The "Business Context" section is what makes this system actually useful. Include your current clients, active deals, team members' names and roles, ongoing projects, and any standing priorities. Update this monthly as things change.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 12 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 12</span><span class="step-num">12</span> Training Your AI On Your Voice</h2>
+
+<p class="lead">The difference between a generic AI assistant and one that sounds exactly like you is training data. Here's how to give Claude your voice, your decision-making patterns, and your business context so every draft reply sounds like it came from you.</p>
+
+<h3>Step 1: Collect 20 Real Conversations</h3>
+<p>Go through your email, Slack, and WhatsApp. Find 20 messages where you responded in a way that represents your style. Copy both the incoming message and your actual reply. These should cover different scenarios:</p>
+
+<ul class="checklist">
+  <li>5 responses to clients/customers</li>
+  <li>5 responses to team members</li>
+  <li>3 responses to new business inquiries/leads</li>
+  <li>3 responses to partners or investors</li>
+  <li>2 responses to vendors or service providers</li>
+  <li>2 responses declining or saying no to something</li>
+</ul>
+
+<h3>Step 2: Build Your Voice Profile</h3>
+<p>Open Claude Code in your project folder and use this prompt:</p>
+
+<div class="prompt-block">
+  <div class="prompt-label">Claude Code Prompt</div>
+  <p>I'm going to paste 20 email/message exchanges. I want you to analyze my writing style and create a "voice profile" that captures: my tone, my sentence structure, how I open messages, how I close them, phrases I use often, my decision-making speed, what I'm direct about vs. where I'm more careful. Save this as a file called voice-profile.md. Here are my messages: [PASTE YOUR 20 CONVERSATIONS]</p>
+</div>
+
+<p>Claude will analyze your patterns and create a detailed profile. Read through it and edit anything that doesn't feel right. This file becomes part of the system prompt.</p>
+
+<h3>Step 3: Add the Voice Profile to Your System Prompt</h3>
+<p>Take the voice-profile.md content and add it to the "Voice Guidelines" section of your master prompt from Section 11. Now every draft reply will match your actual communication style.</p>
+
+<h3>Step 4: Refine Over Time</h3>
+<p>Every time you edit a draft before sending, you're training yourself on what Claude gets wrong. After a week, collect the edits you made and update the voice profile:</p>
+
+<div class="prompt-block">
+  <div class="prompt-label">Claude Code Prompt</div>
+  <p>Here are 10 draft replies you wrote for me and the edits I made before sending. Analyze what you got wrong and update my voice-profile.md accordingly. Focus on patterns - don't just memorize individual corrections. [PASTE ORIGINAL DRAFTS AND YOUR EDITED VERSIONS]</p>
+</div>
+
+<div class="callout">
+  <div class="callout-title">How good does it get?</div>
+  <p>After 2-3 refinement cycles (about 2-3 weeks of daily use), most people find they're approving 80-90% of drafts without edits. The AI gets better every week because you're continuously training it on the gap between what it writes and what you actually send.</p>
+</div>
+
+<div class="cta-block">
+  <h3>This is just the beginning.</h3>
+  <p>An AI EA is one agent. My clients run entire AI workforces - lead gen agents, sales follow-up agents, onboarding agents, financial reporting agents. If you're doing $50-100K/month and still running processes manually, you're leaving money on the table. Let me show you where AI creates the most leverage in your specific business.</p>
+  <a href="https://calendly.com/blackboxalchemist/ai-leverage-audit" class="cta-btn">Book Your AI Leverage Call</a>
+  <div class="cta-sub">See the full AI roadmap for your business. 30 minutes. Free.</div>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 13 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 13</span><span class="step-num">13</span> Deploying the Dashboard</h2>
+
+<p class="lead">The dashboard is the frontend where you review everything each morning. The HTML file included with this guide is your starting point. Here's how to make it live and connect it to your n8n workflows.</p>
+
+<h3>Step 1: Set Up the Dashboard Locally</h3>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Open the dashboard file</strong></p>
+      <p>The <code>index.html</code> file included in this package is your complete dashboard. Open it in a browser to see it. Right now it has demo data. You'll connect it to real data next.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Customize it with Claude Code</strong></p>
+      <p>Open Claude Code in the dashboard folder and tell it to customize the dashboard for your business:</p>
+    </div>
+  </div>
+</div>
+
+<div class="prompt-block">
+  <div class="prompt-label">Claude Code Prompt</div>
+  <p>Read the index.html dashboard file. I want to customize it for my business. My name is [YOUR NAME]. I run [YOUR BUSINESSES]. My team members are [NAMES AND ROLES]. Replace all the demo data with placeholder data that matches my actual business. Keep all the functionality the same - just update the content.</p>
+</div>
+
+<h3>Step 2: Connect to Real Data via n8n</h3>
+<p>To make the dashboard pull live data instead of demo data, you'll add a small backend. Use Claude Code to build it:</p>
+
+<div class="prompt-block">
+  <div class="prompt-label">Claude Code Prompt</div>
+  <p>I need to connect this dashboard to my n8n workflows. Create a simple backend using Node.js and Express that: (1) receives webhook data from n8n containing processed messages, (2) stores them in a local JSON file, (3) serves them to the dashboard via an API endpoint, (4) handles the "approve and send" action by calling back to n8n to send the reply. Include a fetch call in the dashboard that loads messages from the API instead of the hardcoded array.</p>
+</div>
+
+<h3>Step 3: Deploy to Vercel (Free)</h3>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Push your code to GitHub</strong></p>
+      <p>In Claude Code, tell it to initialize a git repo and push to GitHub:</p>
+      <pre><code>Initialize a git repo here, create a .gitignore
+for node_modules, and give me the commands to push
+this to a new GitHub repo called vespr-ea-dashboard.</code></pre>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Connect Vercel</strong></p>
+      <p>Go to <code>vercel.com</code>, sign in with GitHub. Click "New Project," import your vespr-ea-dashboard repo. Vercel will auto-detect the setup and deploy it. You'll get a live URL like <code>vespr-ea-dashboard.vercel.app</code>.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Update n8n webhook URLs</strong></p>
+      <p>Go back to your n8n workflows and update all the "Webhook (Dashboard)" nodes to point to your Vercel URL. Now your live dashboard receives real processed messages.</p>
+    </div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 14 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 14</span><span class="step-num">14</span> Daily Workflow: How to Use It</h2>
+
+<p class="lead">Here's your new morning routine. This should take 5-10 minutes total.</p>
+
+<h3>Every Morning (6:47 AM or whenever you start)</h3>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Open your dashboard</strong></p>
+      <p>Go to your Vercel URL or bookmark it. The Daily Briefing screen loads first with your "Day at a Glance" summary.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Read the AI briefing</strong></p>
+      <p>This is your 90-second morning download. It tells you what's urgent, what's important, and the priority order for your morning. It's personalized to your businesses and current deals.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Review and approve urgent drafts</strong></p>
+      <p>Scroll down to the Urgent section. Read the AI's draft reply for each one. If it's good, click "Approve & Send." If it needs tweaking, click "Edit Draft," make your changes, then approve. Most mornings you'll approve 80%+ without edits.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Handle action items</strong></p>
+      <p>Review the Action Required section. These need a response today but aren't emergencies. Approve drafts or open the full conversation in the Inbox to review context before responding.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Check your calendar</strong></p>
+      <p>Click Calendar in the sidebar to see today's schedule. Click any event for details. Use "Schedule Meeting" if you need to book something new. The AI finds open slots and sends the invite for you.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-content">
+      <p><strong>Review tasks</strong></p>
+      <p>Click Tasks to see what your AI has delegated, what's due today, and what's coming this week. Check off completed items. Click "See conversation" on any task to jump to the related message.</p>
+    </div>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="callout-title">The 5-minute rule</div>
+  <p>If your daily review takes more than 10 minutes, something needs tuning. Either your urgency thresholds are too sensitive (too many things marked urgent), your draft quality needs improvement (see Section 12 for training), or you're reading FYI messages instead of skipping them. FYI means no response needed - trust the AI's classification.</p>
+</div>
+
+<div class="page-break"></div>
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- SECTION 15 -->
+<!-- ════════════════════════════════════ -->
+<h2><span class="section-label">Section 15</span><span class="step-num">15</span> Troubleshooting + FAQ</h2>
+
+<h3>Common Setup Questions</h3>
+
+<h4>Q: Do I need to know how to code?</h4>
+<p>No. Claude Code writes the code for you. You describe what you want in plain English, and it builds it. If something breaks, you describe the problem and Claude fixes it. That said, being comfortable with copy-pasting commands into a terminal is the minimum required skill.</p>
+
+<h4>Q: Can I use this with Outlook instead of Gmail?</h4>
+<p>Yes. n8n has a Microsoft Outlook / Office 365 node. The setup process is similar - you create an app in Azure Portal instead of Google Cloud Console, get OAuth credentials, and connect. Use the same Claude prompts for processing.</p>
+
+<h4>Q: What if I don't use Slack?</h4>
+<p>Skip Section 7. The system works with whatever channels you actually use. You might only need Email + WhatsApp. Or Email + iMessage. Each channel is independent - add or remove them without affecting the others.</p>
+
+<h4>Q: How long until the AI drafts sound like me?</h4>
+<p>Day 1: about 60% accuracy. After your first voice profile training (end of week 1): about 75%. After your first refinement cycle (end of week 2): about 85-90%. Most people stop editing drafts regularly within 3 weeks.</p>
+
+<h4>Q: What happens if n8n goes down?</h4>
+<p>Your messages are still in Gmail, Slack, etc. You just don't get the AI processing until n8n is back. n8n Cloud has 99.9% uptime. When it recovers, it processes any queued messages automatically.</p>
+
+<h4>Q: Can I add more channels later (like Twitter DMs, LinkedIn, etc.)?</h4>
+<p>Yes. n8n has nodes for almost every platform. The pattern is always the same: Trigger node (catches the message) &#8594; Claude node (processes it) &#8594; Dashboard webhook (displays it). Once you've built one channel, adding another takes 15 minutes.</p>
+
+<h4>Q: How do I handle sensitive/confidential messages?</h4>
+<p>All processing happens through your own API key on Anthropic's servers with their privacy policy (they don't train on API data). For extra security, you can self-host n8n instead of using Cloud, which keeps everything on your own servers.</p>
+
+<h4>Q: What if I want help setting this up?</h4>
+<p>This is exactly what my agency does. We build autonomous AI systems for founders doing $50-100K+/month. We handle the full build - channel integrations, AI training, dashboard deployment, and ongoing optimization. Book a free AI Leverage Call and I'll show you what's possible for your specific business.</p>
+
+<div class="cta-block">
+  <h3>Ready to stop doing it manually?</h3>
+  <p>You just read the entire blueprint. You can build it yourself, or you can have my team build it for you in 48 hours while you focus on what makes you money. Either way, the first step is the same - let's map out the highest-leverage AI opportunities in your business.</p>
+  <a href="https://calendly.com/blackboxalchemist/ai-leverage-audit" class="cta-btn">Book Your Free AI Leverage Call</a>
+  <div class="cta-sub">30 minutes. Custom AI roadmap. No strings attached.</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ════════════════════════════════════ -->
+<div class="guide-footer">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">VESPR OS</div>
+  <p style="color:var(--gray2);">Built by Luke Fontaine</p>
+  <p style="margin-top:4px;">Instagram: @luke_fontaine</p>
+  <div class="cover-line" style="margin:24px auto;"></div>
+  <p style="font-size:11px;color:var(--gray4);">The AI systems you saw in the demo dashboard are real. They run two businesses, manage 8+ communication channels, and save 3+ hours every day. This guide gives you everything you need to build the same system.</p>
+  <div style="margin-top:24px;">
+    <a href="https://calendly.com/blackboxalchemist/ai-leverage-audit" class="cta-btn" style="font-size:11px;padding:12px 28px;">Book Your AI Leverage Call</a>
+  </div>
+</div>
+
+</body>
+</html>

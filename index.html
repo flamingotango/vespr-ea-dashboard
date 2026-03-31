@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VESPR OS - AI Executive Assistant</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+   --bg:#06060b;--bg2:#0c0c14;--card:#111119;--card2:#16161f;
+   --border:#1c1c2e;--border2:#25253a;
+   --accent:#7c5cfc;--accent2:#a78bfa;--accent-dim:rgba(124,92,252,.1);
+   --green:#00e676;--green-dim:rgba(0,230,118,.1);
+   --orange:#ff9100;--orange-dim:rgba(255,145,0,.1);
+   --red:#ff3d71;--red-dim:rgba(255,61,113,.1);
+   --blue:#3d8bfd;--blue-dim:rgba(61,139,253,.1);
+   --cyan:#00e5ff;--cyan-dim:rgba(0,229,255,.1);
+   --pink:#e91e8c;--pink-dim:rgba(233,30,140,.1);
+   --text:#eaeaf0;--text2:#a0a0b8;--text3:#5a5a72;
+   --whatsapp:#25d366;--slack:#e01e5a;--imsg:#34c759;
+  }
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;}
+
+  /* ── Sidebar ── */
+  .sidebar{width:260px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100vh;}
+  .sidebar-logo{padding:20px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+  .logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),#a78bfa);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;letter-spacing:1px;}
+  .logo-name{font-size:17px;font-weight:800;letter-spacing:-.3px;}
+  .logo-sub{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
+  .sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto;}
+  .nav-section{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:12px 12px 6px;font-weight:600;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;margin-bottom:2px;position:relative;}
+  .nav-item:hover{background:var(--accent-dim);color:var(--text);}
+  .nav-item.active{background:var(--accent-dim);color:var(--accent2);font-weight:600;}
+  .nav-item .icon{width:20px;text-align:center;font-size:15px;}
+  .nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;min-width:20px;text-align:center;}
+  .nav-badge.green{background:var(--green);color:#000;}
+  .sidebar-user{padding:16px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .user-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+  .user-info{flex:1;}
+  .user-name{font-size:13px;font-weight:600;}
+  .user-role{font-size:11px;color:var(--text3);}
+
+  /* ── Main ── */
+  .main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
+  .topbar-left{display:flex;align-items:center;gap:16px;}
+  .topbar-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+  .topbar-subtitle{font-size:12px;color:var(--text3);}
+  .topbar-right{display:flex;align-items:center;gap:12px;}
+  .status-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;}
+  .status-pill.live{background:var(--green-dim);color:var(--green);}
+  .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+  .time-pill{color:var(--text3);font-size:12px;font-weight:500;background:var(--card);padding:6px 14px;border-radius:20px;border:1px solid var(--border);}
+
+  /* ── Content Area ── */
+  .content{flex:1;overflow:hidden;display:flex;}
+  .panel{display:none;flex:1;overflow:hidden;}
+  .panel.active{display:flex;flex-direction:column;}
+
+  /* ── INBOX PANEL ── */
+  .inbox-layout{display:flex;flex:1;overflow:hidden;}
+  .inbox-list-pane{width:420px;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+  .inbox-filters{display:flex;gap:6px;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
+  .filter-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+  .filter-btn:hover,.filter-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent2);}
+  .filter-btn .cnt{margin-left:4px;opacity:.6;}
+  .inbox-messages{flex:1;overflow-y:auto;padding:8px;}
+  .msg-card{padding:14px 16px;border-radius:12px;cursor:pointer;transition:all .15s;margin-bottom:4px;border:1px solid transparent;position:relative;}
+  .msg-card:hover{background:var(--card);border-color:var(--border);}
+  .msg-card.active{background:var(--accent-dim);border-color:rgba(124,92,252,.25);}
+  .msg-card.unread::before{content:'';position:absolute;left:6px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .msg-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .msg-avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;}
+  .msg-sender{font-size:13px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .msg-time{font-size:10px;color:var(--text3);flex-shrink:0;}
+  .msg-source{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px;}
+  .src-email{background:var(--blue-dim);color:var(--blue);}
+  .src-slack{background:var(--pink-dim);color:var(--slack);}
+  .src-sms{background:var(--green-dim);color:var(--imsg);}
+  .src-whatsapp{background:rgba(37,211,102,.1);color:var(--whatsapp);}
+  .msg-preview{font-size:12px;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;}
+  .msg-footer{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .urgency-mini{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;}
+  .urgency-bar-mini{width:40px;height:4px;border-radius:2px;background:var(--border);overflow:hidden;}
+  .urgency-fill-mini{height:100%;border-radius:2px;}
+
+  /* ── Message Detail Pane ── */
+  .detail-pane{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .detail-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--text3);}
+  .detail-empty .icon{font-size:48px;margin-bottom:12px;opacity:.3;}
+  .detail-header{padding:20px 24px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .detail-from{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .detail-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;}
+  .detail-name{font-size:16px;font-weight:700;}
+  .detail-meta{font-size:12px;color:var(--text3);}
+  .detail-tags{display:flex;gap:8px;flex-wrap:wrap;}
+  .tag{padding:4px 12px;border-radius:8px;font-size:11px;font-weight:600;}
+  .tag-urgent{background:var(--red-dim);color:var(--red);}
+  .tag-action{background:var(--orange-dim);color:var(--orange);}
+  .tag-fyi{background:var(--accent-dim);color:var(--accent2);}
+  .detail-body{flex:1;overflow-y:auto;padding:24px;}
+  .detail-section{margin-bottom:24px;}
+  .detail-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .detail-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .detail-message-text{font-size:14px;line-height:1.7;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+
+  /* Urgency Meter */
+  .urgency-meter{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;}
+  .urgency-gauge{position:relative;width:64px;height:64px;flex-shrink:0;}
+  .urgency-gauge svg{transform:rotate(-90deg);}
+  .urgency-gauge-bg{fill:none;stroke:var(--border);stroke-width:5;}
+  .urgency-gauge-fill{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .6s ease;}
+  .urgency-number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;font-weight:800;}
+  .urgency-info{flex:1;}
+  .urgency-label{font-size:14px;font-weight:700;margin-bottom:2px;}
+  .urgency-reason{font-size:12px;color:var(--text2);line-height:1.4;}
+
+  /* AI Notes */
+  .ai-notes{background:linear-gradient(135deg,rgba(124,92,252,.06),rgba(167,139,250,.04));border:1px solid rgba(124,92,252,.15);border-radius:12px;padding:18px 20px;}
+  .ai-notes-title{font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+  .ai-notes-content{font-size:13px;color:var(--text);line-height:1.6;}
+  .ai-notes-content li{margin-bottom:6px;list-style:none;padding-left:16px;position:relative;}
+  .ai-notes-content li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+
+  /* Draft Response */
+  .draft-section{border-top:1px solid var(--border);padding:20px 24px;flex-shrink:0;background:var(--bg2);}
+  .draft-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent2);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+  .draft-textarea{width:100%;min-height:80px;max-height:160px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;line-height:1.6;resize:vertical;outline:none;transition:border-color .2s;}
+  .draft-textarea:focus{border-color:var(--accent);}
+  .draft-actions{display:flex;gap:8px;margin-top:12px;align-items:center;}
+  .btn{padding:10px 20px;border-radius:10px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px;}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),#a78bfa);color:#fff;}
+  .btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+  .btn-secondary{background:var(--card);border:1px solid var(--border);color:var(--text2);}
+  .btn-secondary:hover{border-color:var(--accent);color:var(--text);}
+  .btn-ghost{background:transparent;color:var(--text3);padding:10px 12px;}
+  .draft-status{margin-left:auto;font-size:11px;color:var(--text3);}
+
+  /* ── CALENDAR PANEL ── */
+  .calendar-content{flex:1;overflow-y:auto;padding:24px 28px;}
+  .cal-top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+  .cal-top-left{}
+  .cal-date-header{font-size:22px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px;}
+  .cal-date-sub{font-size:13px;color:var(--text3);}
+  .cal-schedule-btn{padding:12px 24px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),#a78bfa);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;transition:all .15s;}
+  .cal-schedule-btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(124,92,252,.3);}
+  .cal-timeline{position:relative;padding-left:60px;}
+  .cal-hour{position:relative;min-height:80px;border-top:1px solid var(--border);padding:8px 0;}
+  .cal-hour-label{position:absolute;left:-60px;top:4px;font-size:11px;color:var(--text3);font-weight:500;width:50px;text-align:right;}
+  .cal-event{position:relative;border-radius:10px;padding:12px 16px;margin:4px 0;cursor:pointer;border-left:3px solid;transition:all .15s;}
+  .cal-event:hover{transform:translateX(4px);box-shadow:0 2px 12px rgba(0,0,0,.2);}
+  .cal-event-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+  .cal-event-meta{font-size:11px;color:var(--text2);}
+  .cal-event-time{font-size:11px;font-weight:600;margin-bottom:4px;}
+  .cal-event.evt-urgent{background:var(--red-dim);border-color:var(--red);}
+  .cal-event.evt-meeting{background:var(--blue-dim);border-color:var(--blue);}
+  .cal-event.evt-focus{background:var(--accent-dim);border-color:var(--accent);}
+  .cal-event.evt-call{background:var(--green-dim);border-color:var(--green);}
+  .cal-event.evt-personal{background:var(--orange-dim);border-color:var(--orange);}
+  .cal-event.evt-cancelled{background:rgba(90,90,114,.08);border-color:var(--text3);opacity:.5;}
+  .cal-event.evt-cancelled .cal-event-title{text-decoration:line-through;}
+  .cal-upcoming{margin-top:32px;}
+  .cal-up-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .cal-up-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+  .cal-up-item:hover{border-color:var(--accent);transform:translateY(-1px);}
+  .cal-up-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .cal-up-info{flex:1;}
+  .cal-up-name{font-size:13px;font-weight:600;}
+  .cal-up-detail{font-size:11px;color:var(--text2);margin-top:2px;}
+  .cal-up-time{font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0;}
+
+  /* Modal / Overlay */
+  .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,6,11,.8);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:20px;width:520px;max-height:85vh;overflow-y:auto;animation:fadeUp .3s ease;}
+  .modal-header{padding:24px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;}
+  .modal-header h2{font-size:18px;font-weight:800;letter-spacing:-.3px;}
+  .modal-close{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;transition:all .15s;}
+  .modal-close:hover{background:var(--red-dim);color:var(--red);border-color:var(--red);}
+  .modal-body{padding:20px 24px 24px;}
+  .modal-section{margin-bottom:20px;}
+  .modal-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600;margin-bottom:10px;}
+  .modal-event-info{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .modal-event-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .modal-event-detail{font-size:12px;color:var(--text2);line-height:1.6;}
+  .modal-actions-row{display:flex;gap:8px;margin-top:16px;}
+  .modal-btn{flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;text-align:center;transition:all .15s;}
+  .modal-btn:hover{border-color:var(--accent);background:var(--accent-dim);}
+  .modal-btn.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent2);}
+  .modal-btn.danger{border-color:var(--red);color:var(--red);background:var(--red-dim);}
+  .modal-btn.danger:hover{background:var(--red);color:#fff;}
+
+  /* Reason chips */
+  .reason-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .reason-chip{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+  .reason-chip:hover{border-color:var(--accent);color:var(--text);}
+  .reason-chip.selected{background:var(--accent-dim);border-color:var(--accent);color:var(--accent2);font-weight:600;}
+
+  /* Schedule meeting */
+  .sched-input-row{display:flex;gap:10px;align-items:center;}
+  .sched-input{flex:1;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+  .sched-input:focus{border-color:var(--accent);}
+  .sched-input::placeholder{color:var(--text3);}
+  .sched-find-btn{padding:12px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent),#a78bfa);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s;}
+  .sched-find-btn:hover{transform:translateY(-1px);}
+  .sched-find-btn:disabled{opacity:.5;cursor:default;transform:none;}
+  .time-slot{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+  .time-slot:hover{border-color:var(--accent);}
+  .time-slot.selected{border-color:var(--green);background:var(--green-dim);}
+  .time-slot-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .time-slot.selected .time-slot-radio{border-color:var(--green);background:var(--green);color:#000;font-size:10px;font-weight:900;}
+  .time-slot-info{flex:1;}
+  .time-slot-day{font-size:13px;font-weight:600;}
+  .time-slot-detail{font-size:11px;color:var(--text2);margin-top:2px;}
+  .sched-email-preview{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;font-size:12px;line-height:1.6;color:var(--text2);margin-top:12px;}
+  .sched-email-preview strong{color:var(--text);}
+  .sched-duration-row{display:flex;gap:8px;margin-top:12px;}
+  .dur-chip{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+  .dur-chip.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent2);}
+
+  /* AI working animation */
+  .ai-working{display:flex;align-items:center;gap:10px;padding:16px;color:var(--accent2);font-size:13px;font-weight:500;}
+  .ai-spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ── BRIEFING PANEL ── */
+  .briefing-content{flex:1;overflow-y:auto;padding:24px 28px;}
+  .brief-hero{background:linear-gradient(135deg,rgba(124,92,252,.08),rgba(0,230,118,.04));border:1px solid rgba(124,92,252,.15);border-radius:16px;padding:28px;margin-bottom:24px;}
+  .brief-hero h2{font-size:22px;font-weight:800;margin-bottom:8px;letter-spacing:-.3px;}
+  .brief-hero p{font-size:13px;color:var(--text2);line-height:1.5;}
+  .brief-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px;}
+  .brief-stat{text-align:center;padding:14px;background:rgba(0,0,0,.2);border-radius:10px;}
+  .brief-stat-val{font-size:28px;font-weight:800;}
+  .brief-stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+  .brief-section{margin-bottom:28px;}
+  .brief-section-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .brief-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:10px;}
+  .brief-item-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .brief-item-from{font-size:14px;font-weight:600;}
+  .brief-item-summary{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:12px;}
+  .brief-item-draft{background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.12);border-radius:10px;padding:14px;font-size:13px;line-height:1.5;}
+  .brief-item-actions{display:flex;gap:8px;margin-top:12px;}
+
+  /* ── TASKS PANEL ── */
+  .tasks-content{flex:1;overflow-y:auto;padding:24px 28px;}
+  .task-col-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .task-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+  .task-item:hover{border-color:var(--accent);}
+  .task-item-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+  .task-item-meta{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:8px;}
+  .task-checkbox{width:18px;height:18px;border-radius:6px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+  .task-checkbox.checked{background:var(--green);border-color:var(--green);color:#000;font-size:11px;font-weight:900;}
+  .task-convo-link{font-size:11px;color:var(--accent2);font-weight:600;margin-top:6px;cursor:pointer;transition:all .15s;display:inline-block;}
+  .task-convo-link:hover{color:var(--text);text-decoration:underline;}
+  .task-row{display:flex;align-items:flex-start;gap:12px;}
+  .task-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+  .task-column h3{font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+  /* ── Sent Toast ── */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--green);color:#000;padding:14px 24px;border-radius:12px;font-size:13px;font-weight:700;z-index:1000;display:flex;align-items:center;gap:8px;transform:translateY(100px);opacity:0;transition:all .3s ease;}
+  .toast.show{transform:translateY(0);opacity:1;}
+
+  /* Scrollbar */
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--border2);}
+
+  /* Animations */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .fade-up{animation:fadeUp .4s ease forwards;}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">V</div>
+    <div>
+      <div class="logo-name">VESPR OS</div>
+      <div class="logo-sub">AI Executive Assistant</div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Command Center</div>
+    <div class="nav-item active" onclick="showPanel('briefing')">
+      <span class="icon">&#9889;</span> Daily Briefing
+    </div>
+    <div class="nav-item" onclick="showPanel('inbox')">
+      <span class="icon">&#9993;</span> Unified Inbox
+      <span class="nav-badge">8</span>
+    </div>
+    <div class="nav-item" onclick="showPanel('calendar')">
+      <span class="icon">&#128197;</span> Calendar
+      <span class="nav-badge green">12</span>
+    </div>
+    <div class="nav-item" onclick="showPanel('tasks')">
+      <span class="icon">&#9745;</span> Tasks &amp; Delegations
+    </div>
+    <div class="nav-section">Channels</div>
+    <div class="nav-item" onclick="filterSource('email')">
+      <span class="icon">&#128231;</span> Email
+      <span style="margin-left:auto;font-size:11px;color:var(--text3);">2</span>
+    </div>
+    <div class="nav-item" onclick="filterSource('slack')">
+      <span class="icon">&#128172;</span> Slack
+      <span style="margin-left:auto;font-size:11px;color:var(--text3);">2</span>
+    </div>
+    <div class="nav-item" onclick="filterSource('sms')">
+      <span class="icon">&#128241;</span> iMessage
+      <span style="margin-left:auto;font-size:11px;color:var(--text3);">2</span>
+    </div>
+    <div class="nav-item" onclick="filterSource('whatsapp')">
+      <span class="icon">&#128242;</span> WhatsApp
+      <span style="margin-left:auto;font-size:11px;color:var(--text3);">2</span>
+    </div>
+    <div class="nav-section">System</div>
+    <div class="nav-item">
+      <span class="icon">&#9881;</span> Settings
+    </div>
+    <div class="nav-item">
+      <span class="icon">&#128202;</span> Analytics
+    </div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">LF</div>
+    <div class="user-info">
+      <div class="user-name">Luke Fontaine</div>
+      <div class="user-role">Founder &amp; CEO</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Area -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="topbar-title" id="topbarTitle">Daily Briefing</div>
+        <div class="topbar-subtitle" id="topbarSub">Monday, March 31, 2026</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill live"><div class="pulse-dot"></div> Scanning Live</div>
+      <div class="time-pill" id="liveClock">6:47 AM</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════ BRIEFING PANEL ═══════ -->
+    <div class="panel active" id="panel-briefing">
+      <div class="briefing-content">
+        <!-- ── YOUR DAY AT A GLANCE ── -->
+        <div style="background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(0,229,255,.06));border:1px solid rgba(124,92,252,.18);border-radius:16px;padding:28px;margin-bottom:24px;" class="fade-up">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#a78bfa);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;">&#9733;</div>
+            <div>
+              <div style="font-size:18px;font-weight:800;letter-spacing:-.3px;">Good morning, Luke.</div>
+              <div style="font-size:12px;color:var(--text3);">Here's your day at a glance - Monday, March 31</div>
+            </div>
+          </div>
+
+          <div style="font-size:14px;line-height:1.8;color:var(--text);">
+            <p>Today is a <strong style="color:var(--green);">big opportunity day</strong> across both businesses. On the <strong>real estate side</strong>, Mike Torres completed the Muirland St inspection and flagged a foundation repair that gives you leverage to renegotiate $15-20K off the purchase price. Meanwhile, Lisa Park got your <strong>DSCR loan approved at 7.1%</strong> for the Birwood portfolio - docs are ready for your signature to lock the rate.</p>
+
+            <p style="margin-top:12px;">On the <strong>AI agency side</strong>, Jason Rivera's lead gen agent needs a quick update this morning - easy fix, and a great chance to set up proactive monitoring so it stays bulletproof going forward. Fast turnaround here deepens the relationship with a $5K/month retainer client.</p>
+
+            <p style="margin-top:12px;">The good news: <strong>Chris Baldwin wants to invest $200K</strong> in Detroit Section 8 through your Buyers Club. He's a serious player - discovery call at 11am. And Samantha Wells, an agency owner doing $80K/month, wants a demo of your AI agent buildout. That's a potential $7,500/month retainer if you close her at 2pm.</p>
+
+            <p style="margin-top:12px;">David Park found <strong>3 new off-market deals</strong> in Detroit - numbers look solid. He's walking the properties at 4pm and will send you video walkthroughs. Plus, Stripe just hit with a $7,500 retainer payment from Meridian Corp, and Tyler's blog post on AI agents for real estate is pulling 2x traffic.</p>
+
+            <p style="margin-top:12px;">Your calendar has <strong>12 events</strong> today - lender call at 9:30, investor discovery at 11, AI demo at 2, and David's walking the 3 properties at 4. I've protected your deep work blocks. Don't skip the 3pm content block - you still need to record that AI EA reel for Instagram.</p>
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(124,92,252,.15);">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent2);font-weight:700;margin-bottom:10px;">Priority order this morning</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+                <div style="width:22px;height:22px;border-radius:6px;background:var(--red-dim);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">1</div>
+                <span>Update Jason's AI lead gen agent <span style="color:var(--text3);">(quick fix + add monitoring)</span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+                <div style="width:22px;height:22px;border-radius:6px;background:var(--red-dim);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">2</div>
+                <span>Review Muirland inspection report <span style="color:var(--text3);">(leverage opportunity to renegotiate)</span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+                <div style="width:22px;height:22px;border-radius:6px;background:var(--red-dim);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">3</div>
+                <span>Sign DSCR loan docs for Birwood portfolio <span style="color:var(--text3);">(rate lock expires today)</span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+                <div style="width:22px;height:22px;border-radius:6px;background:var(--orange-dim);color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">4</div>
+                <span>Prep for Chris Baldwin investor discovery call <span style="color:var(--text3);">(11am - $200K opportunity)</span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+                <div style="width:22px;height:22px;border-radius:6px;background:var(--accent-dim);color:var(--accent2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">5</div>
+                <span>Approve drafted replies for all 8 messages <span style="color:var(--text3);">(I've drafted all 8)</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STATS ROW ── -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
+          <div style="text-align:center;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+            <div style="font-size:28px;font-weight:800;color:var(--red);">3</div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Urgent</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+            <div style="font-size:28px;font-weight:800;color:var(--orange);">3</div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Action Req'd</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+            <div style="font-size:28px;font-weight:800;color:var(--accent2);">2</div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">FYI Only</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+            <div style="font-size:28px;font-weight:800;color:var(--green);">8</div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Drafts Ready</div>
+          </div>
+        </div>
+
+        <div class="brief-section">
+          <div class="brief-section-title"><span style="color:var(--red);">&#9679;</span> Urgent - Respond Now</div>
+
+          <div class="brief-item fade-up">
+            <div class="brief-item-header">
+              <span class="tag tag-urgent">Urgency: 95</span>
+              <span class="msg-source src-sms">iMessage</span>
+              <span class="brief-item-from">Mike Torres</span>
+              <span style="margin-left:auto;font-size:11px;color:var(--text3);">5:48 AM</span>
+            </div>
+            <div class="brief-item-summary">Inspection complete on 14823 Muirland St. Mike found a foundation repair needed - this gives you leverage to renegotiate $15-20K off the purchase price and still hit your target cash-on-cash return.</div>
+            <div class="brief-item-draft">
+              <div style="font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;">&#9733; AI Draft</div>
+              Mike - appreciate the thorough report. Send me the full write-up with photos and get me that repair estimate from your foundation guy today. I'm going to use this as leverage to renegotiate the price down. Good find - this could save us $15-20K on the deal.
+            </div>
+            <div class="brief-item-actions">
+              <button class="btn btn-primary" onclick="sendBrief(this)">&#10003; Approve &amp; Send</button>
+              <button class="btn btn-secondary" onclick="showPanel('inbox');selectMessage(0);">Edit Draft</button>
+            </div>
+          </div>
+
+          <div class="brief-item fade-up">
+            <div class="brief-item-header">
+              <span class="tag tag-urgent">Urgency: 92</span>
+              <span class="msg-source src-email">Email</span>
+              <span class="brief-item-from">Lisa Park</span>
+              <span style="margin-left:auto;font-size:11px;color:var(--text3);">5:15 AM</span>
+            </div>
+            <div class="brief-item-summary">DSCR loan approved at 7.1% for the Birwood portfolio. Loan docs need your signature today or the rate lock expires. This covers 4 properties in the portfolio.</div>
+            <div class="brief-item-draft">
+              <div style="font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;">&#9733; AI Draft</div>
+              Lisa - great news on the 7.1% approval. I'll review and sign the docs this morning. Confirm the rate lock deadline so I know my hard cutoff. Also, can you send the final amortization schedule for all 4 properties? Want to make sure the cash flow numbers still work at this rate.
+            </div>
+            <div class="brief-item-actions">
+              <button class="btn btn-primary" onclick="sendBrief(this)">&#10003; Approve &amp; Send</button>
+              <button class="btn btn-secondary" onclick="showPanel('inbox');selectMessage(1);">Edit Draft</button>
+            </div>
+          </div>
+
+          <div class="brief-item fade-up">
+            <div class="brief-item-header">
+              <span class="tag tag-urgent">Urgency: 90</span>
+              <span class="msg-source src-whatsapp">WhatsApp</span>
+              <span class="brief-item-from">Jason Rivera</span>
+              <span style="margin-left:auto;font-size:11px;color:var(--text3);">5:31 AM</span>
+            </div>
+            <div class="brief-item-summary">His AI lead gen agent needs a quick update - easy fix to get it running at full capacity again. Great opportunity to add proactive monitoring and make the system even more reliable.</div>
+            <div class="brief-item-draft">
+              <div style="font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;">&#9733; AI Draft</div>
+              Jason - I'm on it. Pulling up the agent logs now and will have everything tuned up within the hour. I'm also adding proactive monitoring so we stay ahead of anything like this going forward. Expect a status update from me by 9am.
+            </div>
+            <div class="brief-item-actions">
+              <button class="btn btn-primary" onclick="sendBrief(this)">&#10003; Approve &amp; Send</button>
+              <button class="btn btn-secondary" onclick="showPanel('inbox');selectMessage(2);">Edit Draft</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="brief-section">
+          <div class="brief-section-title"><span style="color:var(--orange);">&#9679;</span> Action Required - Respond Today</div>
+
+          <div class="brief-item fade-up">
+            <div class="brief-item-header">
+              <span class="tag tag-action">Urgency: 68</span>
+              <span class="msg-source src-email">Email</span>
+              <span class="brief-item-from">Chris Baldwin</span>
+            </div>
+            <div class="brief-item-summary">Wants to invest $200K in Detroit Section 8 through your Buyers Club. Requesting a discovery call to discuss portfolio strategy and deal flow.</div>
+            <div class="brief-item-draft">
+              <div style="font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;">&#9733; AI Draft</div>
+              Chris - appreciate the interest. $200K gets you into some strong cash-flowing Section 8 properties in Detroit. I have a discovery call slot open at 11am today - I'll walk you through the Buyers Club model, current deal flow, and projected returns. Sending you a calendar invite now.
+            </div>
+            <div class="brief-item-actions">
+              <button class="btn btn-primary" onclick="sendBrief(this)">&#10003; Approve &amp; Send</button>
+              <button class="btn btn-secondary" onclick="showPanel('inbox');selectMessage(3);">Edit Draft</button>
+            </div>
+          </div>
+
+          <div class="brief-item fade-up">
+            <div class="brief-item-header">
+              <span class="tag tag-action">Urgency: 55</span>
+              <span class="msg-source src-whatsapp">WhatsApp</span>
+              <span class="brief-item-from">Samantha Wells</span>
+            </div>
+            <div class="brief-item-summary">Agency owner doing $80K/month wants a demo of your AI agent buildout. She's spending $12K/month on VAs for repetitive tasks - perfect use case for automation.</div>
+            <div class="brief-item-draft">
+              <div style="font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;">&#9733; AI Draft</div>
+              Samantha - $12K/month on VAs for tasks AI can handle is exactly what we fix. I'll show you exactly how we'd automate your client onboarding, reporting, and lead qual. Demo call is set for 2pm today - sending you the link now. Come with your top 3 bottlenecks and I'll map out the solution live.
+            </div>
+            <div class="brief-item-actions">
+              <button class="btn btn-primary" onclick="sendBrief(this)">&#10003; Approve &amp; Send</button>
+              <button class="btn btn-secondary" onclick="showPanel('inbox');selectMessage(4);">Edit Draft</button>
+            </div>
+          </div>
+
+          <div class="brief-item fade-up">
+            <div class="brief-item-header">
+              <span class="tag tag-action">Urgency: 45</span>
+              <span class="msg-source src-sms">iMessage</span>
+              <span class="brief-item-from">David Park</span>
+            </div>
+            <div class="brief-item-summary">Found 3 new off-market deals in Detroit. Numbers look solid - all in the Section 8 buy box. He's walking the properties at 4pm and sending video walkthroughs.</div>
+            <div class="brief-item-draft">
+              <div style="font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;">&#9733; AI Draft</div>
+              David - send me the addresses and asking prices. I'll run quick numbers before you walk them at 4. Shoot me video walkthroughs of each one. If the cap rates are above 12% and they're in our target neighborhoods, we move fast.
+            </div>
+            <div class="brief-item-actions">
+              <button class="btn btn-primary" onclick="sendBrief(this)">&#10003; Approve &amp; Send</button>
+              <button class="btn btn-secondary" onclick="showPanel('inbox');selectMessage(5);">Edit Draft</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="brief-section">
+          <div class="brief-section-title"><span style="color:var(--accent2);">&#9679;</span> Today's Calendar</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="cal-up-item" onclick="showPanel('calendar')">
+              <div class="cal-up-dot" style="background:var(--green);"></div>
+              <div class="cal-up-info"><div class="cal-up-name">Lender Call with Lisa Park</div><div class="cal-up-detail">DSCR loan docs for Birwood</div></div>
+              <div class="cal-up-time">9:30 AM</div>
+            </div>
+            <div class="cal-up-item" onclick="showPanel('calendar')">
+              <div class="cal-up-dot" style="background:var(--green);"></div>
+              <div class="cal-up-info"><div class="cal-up-name">Investor Discovery Call with Chris Baldwin</div><div class="cal-up-detail">Section 8 Buyers Club</div></div>
+              <div class="cal-up-time">11:00 AM</div>
+            </div>
+            <div class="cal-up-item" onclick="showPanel('calendar')">
+              <div class="cal-up-dot" style="background:var(--green);"></div>
+              <div class="cal-up-info"><div class="cal-up-name">AI Demo Call with Samantha Wells</div><div class="cal-up-detail">Agency AI buildout demo</div></div>
+              <div class="cal-up-time">2:00 PM</div>
+            </div>
+            <div class="cal-up-item" onclick="showPanel('calendar')">
+              <div class="cal-up-dot" style="background:var(--blue);"></div>
+              <div class="cal-up-info"><div class="cal-up-name">David's Property Walkthroughs</div><div class="cal-up-detail">3 Detroit properties - video updates</div></div>
+              <div class="cal-up-time">4:00 PM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ INBOX PANEL ═══════ -->
+    <div class="panel" id="panel-inbox">
+      <div class="inbox-layout">
+        <div class="inbox-list-pane">
+          <div class="inbox-filters">
+            <button class="filter-btn active" onclick="filterMessages('all',this)">All <span class="cnt">8</span></button>
+            <button class="filter-btn" onclick="filterMessages('urgent',this)">Urgent <span class="cnt">3</span></button>
+            <button class="filter-btn" onclick="filterMessages('action',this)">Action <span class="cnt">3</span></button>
+            <button class="filter-btn" onclick="filterMessages('fyi',this)">FYI <span class="cnt">2</span></button>
+          </div>
+          <div class="inbox-messages" id="inboxList"></div>
+        </div>
+        <div class="detail-pane" id="detailPane">
+          <div class="detail-empty">
+            <div class="icon">&#9993;</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Select a message</div>
+            <div style="font-size:12px;">Click any conversation to view details and AI analysis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ CALENDAR PANEL ═══════ -->
+    <div class="panel" id="panel-calendar">
+      <div class="calendar-content">
+        <div class="cal-top-bar">
+          <div class="cal-top-left">
+            <div class="cal-date-header">Monday, March 31</div>
+            <div class="cal-date-sub">12 events today &middot; Next: Team Standup in 2h 13m</div>
+          </div>
+          <button class="cal-schedule-btn" onclick="openScheduleModal()">+ Schedule Meeting</button>
+        </div>
+        <div class="cal-timeline" id="calTimeline"></div>
+        <div class="cal-upcoming">
+          <div class="cal-up-title">&#128197; Tomorrow - April 1</div>
+          <div class="cal-up-item">
+            <div class="cal-up-dot" style="background:var(--blue);"></div>
+            <div class="cal-up-info"><div class="cal-up-name">Team Standup</div><div class="cal-up-detail">Daily sync</div></div>
+            <div class="cal-up-time">9:00 AM</div>
+          </div>
+          <div class="cal-up-item">
+            <div class="cal-up-dot" style="background:var(--orange);"></div>
+            <div class="cal-up-info"><div class="cal-up-name">Muirland Property Inspection (re-inspect)</div><div class="cal-up-detail">Foundation follow-up</div></div>
+            <div class="cal-up-time">10:00 AM</div>
+          </div>
+          <div class="cal-up-item">
+            <div class="cal-up-dot" style="background:var(--accent);"></div>
+            <div class="cal-up-info"><div class="cal-up-name">AI Client Onboarding - Meridian Corp</div><div class="cal-up-detail">New retainer setup</div></div>
+            <div class="cal-up-time">2:00 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ EVENT DETAIL MODAL ═══ -->
+    <div class="modal-overlay" id="eventModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="eventModalTitle">Event Details</h2>
+          <button class="modal-close" onclick="closeModal('eventModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="eventModalBody"></div>
+      </div>
+    </div>
+
+    <!-- ═══ RESCHEDULE MODAL ═══ -->
+    <div class="modal-overlay" id="rescheduleModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Reschedule Event</h2>
+          <button class="modal-close" onclick="closeModal('rescheduleModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-section">
+            <div class="modal-section-title">Event</div>
+            <div class="modal-event-info" id="reschedEventInfo"></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-section-title">Why are you rescheduling?</div>
+            <div class="reason-chips" id="reasonChips">
+              <button class="reason-chip" onclick="selectReason(this)">Conflict with another meeting</button>
+              <button class="reason-chip" onclick="selectReason(this)">Need more prep time</button>
+              <button class="reason-chip" onclick="selectReason(this)">Not a priority today</button>
+              <button class="reason-chip" onclick="selectReason(this)">Waiting on deliverables</button>
+              <button class="reason-chip" onclick="selectReason(this)">Personal / health</button>
+              <button class="reason-chip" onclick="selectReason(this)">Delegate to someone else</button>
+            </div>
+          </div>
+          <div class="modal-section" id="reschedAISection" style="display:none;">
+            <div class="ai-working" id="reschedAIWorking"><div class="ai-spinner"></div>VESPR is finding the best new time...</div>
+            <div id="reschedAISuggestion" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SCHEDULE MEETING MODAL ═══ -->
+    <div class="modal-overlay" id="scheduleModal">
+      <div class="modal" style="width:560px;">
+        <div class="modal-header">
+          <h2>Schedule a Meeting</h2>
+          <button class="modal-close" onclick="closeModal('scheduleModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-section">
+            <div class="modal-section-title">Who do you want to meet with?</div>
+            <div class="sched-input-row">
+              <input class="sched-input" id="schedNameInput" type="text" placeholder="Type a name (e.g. Sarah Chen, Kevin Liu...)">
+              <button class="sched-find-btn" id="schedFindBtn" onclick="findTimes()" disabled>Find 3 Times</button>
+            </div>
+            <div id="contactConfirmBox" style="display:none;margin-top:10px;"></div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-section-title">Meeting Duration</div>
+            <div class="sched-duration-row">
+              <button class="dur-chip" onclick="selectDuration(this,15)">15 min</button>
+              <button class="dur-chip active" onclick="selectDuration(this,30)">30 min</button>
+              <button class="dur-chip" onclick="selectDuration(this,45)">45 min</button>
+              <button class="dur-chip" onclick="selectDuration(this,60)">1 hour</button>
+            </div>
+          </div>
+          <div class="modal-section">
+            <div class="modal-section-title">Topic (optional)</div>
+            <input class="sched-input" id="schedTopicInput" type="text" placeholder="e.g. Partnership discussion, scaling strategy...">
+          </div>
+          <div id="schedResults" style="display:none;">
+            <div class="modal-section">
+              <div class="modal-section-title">Available Times Found</div>
+              <div id="schedTimeSlots"></div>
+            </div>
+            <div class="modal-section" id="schedEmailSection" style="display:none;">
+              <div class="modal-section-title">Email Preview</div>
+              <div class="sched-email-preview" id="schedEmailPreview"></div>
+              <div style="margin-top:12px;">
+                <button class="btn btn-primary" onclick="sendScheduleEmail()" style="width:100%;justify-content:center;padding:14px;">Send Invite Email</button>
+              </div>
+            </div>
+          </div>
+          <div id="schedAIWorking" style="display:none;">
+            <div class="ai-working"><div class="ai-spinner"></div>VESPR is scanning your calendar for openings...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ TASKS PANEL ═══════ -->
+    <div class="panel" id="panel-tasks">
+      <div class="tasks-content">
+        <div class="task-grid">
+          <div class="task-column">
+            <h3><span style="color:var(--red);">&#9679;</span> Today - Must Do</h3>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div style="flex:1;">
+                  <div class="task-item-title">Review Muirland inspection report + decide on deal</div>
+                  <div class="task-item-meta"><span style="color:var(--red);">Before closing</span> &middot; Mike Torres</div>
+                  <div class="task-convo-link" onclick="event.stopPropagation();goToConvo(0);">See conversation &#8594;</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div style="flex:1;">
+                  <div class="task-item-title">Sign DSCR loan docs for Birwood portfolio</div>
+                  <div class="task-item-meta"><span style="color:var(--red);">Rate lock expires 5pm</span> &middot; Lisa Park</div>
+                  <div class="task-convo-link" onclick="event.stopPropagation();goToConvo(1);">See conversation &#8594;</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div style="flex:1;">
+                  <div class="task-item-title">Tune up Jason's AI lead gen agent + add monitoring</div>
+                  <div class="task-item-meta"><span style="color:var(--red);">ASAP</span> &middot; Jason Rivera</div>
+                  <div class="task-convo-link" onclick="event.stopPropagation();goToConvo(2);">See conversation &#8594;</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div style="flex:1;">
+                  <div class="task-item-title">Prep for Chris Baldwin investor discovery call</div>
+                  <div class="task-item-meta">11am slot &middot; Chris Baldwin</div>
+                  <div class="task-convo-link" onclick="event.stopPropagation();goToConvo(3);">See conversation &#8594;</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div>
+                  <div class="task-item-title">Record Instagram Reel - AI EA demo</div>
+                  <div class="task-item-meta">3-4pm content block</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task-column">
+            <h3><span style="color:var(--orange);">&#9679;</span> This Week</h3>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div style="flex:1;">
+                  <div class="task-item-title">Send Samantha AI buildout proposal after demo</div>
+                  <div class="task-item-meta">After 2pm demo call</div>
+                  <div class="task-convo-link" onclick="event.stopPropagation();goToConvo(4);">See conversation &#8594;</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div style="flex:1;">
+                  <div class="task-item-title">Underwrite David's 3 off-market deals</div>
+                  <div class="task-item-meta">Run full numbers after David's walkthroughs</div>
+                  <div class="task-convo-link" onclick="event.stopPropagation();goToConvo(5);">See conversation &#8594;</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div>
+                  <div class="task-item-title">Plan Buyers Club Q2 investor newsletter</div>
+                  <div class="task-item-meta">Quarterly update for investors</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div>
+                  <div class="task-item-title">Schedule Muirland re-inspection</div>
+                  <div class="task-item-meta">After foundation decision</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task-column">
+            <h3><span style="color:var(--green);">&#9679;</span> AI Delegated</h3>
+            <div class="task-item" style="border-color:var(--green-dim);">
+              <div class="task-row">
+                <div class="task-checkbox checked" onclick="toggleTask(this)">&#10003;</div>
+                <div>
+                  <div class="task-item-title">Draft all 8 inbox replies</div>
+                  <div class="task-item-meta" style="color:var(--green);">&#10003; Completed 6:47 AM</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item" style="border-color:var(--green-dim);">
+              <div class="task-row">
+                <div class="task-checkbox checked" onclick="toggleTask(this)">&#10003;</div>
+                <div>
+                  <div class="task-item-title">Sort inbox by priority</div>
+                  <div class="task-item-meta" style="color:var(--green);">&#10003; Completed 6:46 AM</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item" style="border-color:var(--green-dim);">
+              <div class="task-row">
+                <div class="task-checkbox checked" onclick="toggleTask(this)">&#10003;</div>
+                <div>
+                  <div class="task-item-title">Compile daily briefing</div>
+                  <div class="task-item-meta" style="color:var(--green);">&#10003; Completed 6:47 AM</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div>
+                  <div class="task-item-title">Monitor Jason's agent performance</div>
+                  <div class="task-item-meta" style="color:var(--cyan);">&#9203; Checking every 2hrs</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div>
+                  <div class="task-item-title">Send Chris Baldwin Buyers Club deck</div>
+                  <div class="task-item-meta" style="color:var(--cyan);">&#9203; Waiting for call confirmation</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-row">
+                <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                <div>
+                  <div class="task-item-title">Track blog post performance</div>
+                  <div class="task-item-meta" style="color:var(--cyan);">&#9203; Reporting at 6pm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Calendar Events Data ──
+const calEvents = [
+  {id:0, hour:7, time:"7:00 - 7:45 AM", title:"Morning Routine", type:"personal", meta:"Gym + Journaling", detail:"Protected morning block. AI keeps this clear automatically.", attendees:[], location:"Home", canReschedule:true},
+  {id:1, hour:8, time:"8:00 - 8:30 AM", title:"Daily Briefing Review", type:"focus", meta:"Review AI briefing, approve drafts, set priorities", detail:"Review and approve all AI-drafted communications from overnight scan. Set priorities for the day.", attendees:[], location:"Office", canReschedule:false},
+  {id:2, hour:9, time:"9:00 - 9:30 AM", title:"Team Standup", type:"meeting", meta:"RE + AI team sync / Zoom", detail:"Daily sync across both businesses. Review blockers on active deals, AI client projects, and content pipeline.", attendees:["Tyler Morris","David Park","Jason Rivera"], location:"Zoom", canReschedule:true},
+  {id:3, hour:9.5, time:"9:30 - 10:00 AM", title:"Lisa Park - Lender Call", type:"call", meta:"DSCR loan docs for Birwood portfolio / Phone", detail:"Review and sign DSCR loan documents approved at 7.1% for the Birwood portfolio. Covers 4 Section 8 properties. Rate lock expires today.", attendees:["Lisa Park"], location:"Phone", canReschedule:false, aiNote:"Rate lock expires today - do not reschedule"},
+  {id:4, hour:10, time:"10:00 - 11:00 AM", title:"Deep Work - AI Agent Build", type:"focus", meta:"Client agent architecture / Focus block / Protected by AI", detail:"Dedicated focus time for building AI agent infrastructure for client projects. VESPR blocks all incoming meeting requests during this window.", attendees:[], location:"Office", canReschedule:true},
+  {id:5, hour:11, time:"11:00 - 11:30 AM", title:"Chris Baldwin - Investor Discovery Call", type:"call", meta:"New Section 8 investor / $200K allocation / Zoom", detail:"Discovery call with Chris Baldwin. He wants to invest $200K in Detroit Section 8 through the Buyers Club. Walk him through the model, current deal flow, and projected returns.", attendees:["Chris Baldwin"], location:"Zoom", canReschedule:true, aiNote:"AI scheduled today based on Chris's email"},
+  {id:6, hour:12, time:"12:00 - 1:00 PM", title:"Lunch", type:"personal", meta:"Protected block", detail:"Protected lunch block. AI declines all meeting requests during this window.", attendees:[], location:"", canReschedule:false},
+  {id:7, hour:13, time:"1:00 - 1:30 PM", title:"Jason Rivera - AI Agent Tune-Up", type:"call", meta:"Agent optimization + monitoring setup / Screen share", detail:"Quick tune-up on Jason's AI lead gen agent plus adding proactive monitoring alerts. Great chance to strengthen the system and deepen the relationship with a $5K/month retainer client.", attendees:["Jason Rivera"], location:"Zoom Screen Share", canReschedule:true, aiNote:"AI flagged - quick fix + opportunity to add monitoring"},
+  {id:8, hour:14, time:"2:00 - 2:30 PM", title:"Samantha Wells - AI Demo Call", type:"call", meta:"Agency AI buildout demo / Zoom", detail:"Demo call with Samantha Wells. She runs an agency doing $80K/month and spends $12K/month on VAs for repetitive tasks. Show her how AI agents can replace manual client onboarding, reporting, and lead qualification.", attendees:["Samantha Wells"], location:"Zoom", canReschedule:true, aiNote:"Potential $7,500/month retainer client"},
+  {id:9, hour:15, time:"3:00 - 4:00 PM", title:"Deep Work - Content Creation", type:"focus", meta:"Instagram reel + carousel batch / Focus block", detail:"Record AI EA demo reel for Instagram. Design carousel for AI agents in real estate post. Write captions for the week.", attendees:[], location:"Office", canReschedule:true},
+  {id:10, hour:16, time:"4:00 - 5:00 PM", title:"David Park - Property Walkthroughs", type:"meeting", meta:"David walking 3 Detroit properties / Video updates", detail:"David is walking 3 new off-market properties in Detroit. He'll send video walkthroughs and initial condition notes. All in the Section 8 buy box. Review footage and run underwriting on any that hit 12%+ cap rate.", attendees:["David Park"], location:"Remote - David on site", canReschedule:true},
+  {id:11, hour:17, time:"5:30 - 6:00 PM", title:"Investor Pipeline Review", type:"meeting", meta:"Review Buyers Club pipeline / Office", detail:"Review current Buyers Club investor pipeline. Update deal allocation, track investor commitments, and prep Q2 newsletter content.", attendees:[], location:"Office", canReschedule:true}
+];
+
+let selectedScheduleDuration = 30;
+let currentRescheduleEvent = null;
+
+function renderCalendar() {
+  const timeline = document.getElementById('calTimeline');
+  timeline.innerHTML = '';
+  calEvents.forEach(evt => {
+    const typeClass = evt.cancelled ? 'evt-cancelled' : 'evt-' + evt.type;
+    const hourDiv = document.createElement('div');
+    hourDiv.className = 'cal-hour';
+    if ([0,1,4,6,9].includes(evt.id)) hourDiv.style.minHeight = '60px';
+    let aiTag = evt.aiNote ? ` &middot; <strong style="color:var(--green);">${evt.aiNote}</strong>` : '';
+    if (evt.cancelled) aiTag = ` &middot; <strong style="color:var(--red);">Cancelled - ${evt.cancelReason}</strong>`;
+    hourDiv.innerHTML = `
+      <div class="cal-hour-label">${evt.hour > 12 ? evt.hour - 12 : evt.hour} ${evt.hour >= 12 ? 'PM' : 'AM'}</div>
+      <div class="cal-event ${typeClass}" onclick="openEventModal(${evt.id})">
+        <div class="cal-event-time">${evt.time}</div>
+        <div class="cal-event-title">${evt.title}</div>
+        <div class="cal-event-meta">${evt.meta}${aiTag}</div>
+      </div>`;
+    timeline.appendChild(hourDiv);
+  });
+}
+
+function openEventModal(id) {
+  const evt = calEvents.find(e => e.id === id);
+  if (!evt) return;
+  document.getElementById('eventModalTitle').textContent = evt.title;
+  const body = document.getElementById('eventModalBody');
+  const attendeeList = evt.attendees.length > 0
+    ? evt.attendees.map(a => `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;"><div style="width:28px;height:28px;border-radius:8px;background:var(--accent-dim);color:var(--accent2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">${a.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><span style="font-size:13px;">${a}</span></div>`).join('')
+    : '<div style="font-size:12px;color:var(--text3);">No attendees</div>';
+
+  body.innerHTML = `
+    <div class="modal-section">
+      <div class="modal-event-info">
+        <div class="modal-event-title">${evt.title}</div>
+        <div class="modal-event-detail">
+          <div style="margin-top:6px;">&#128336; ${evt.time}</div>
+          ${evt.location ? '<div>&#128205; ' + evt.location + '</div>' : ''}
+          <div style="margin-top:8px;">${evt.detail}</div>
+        </div>
+      </div>
+    </div>
+    ${evt.aiNote ? '<div class="modal-section"><div class="ai-notes" style="padding:14px 16px;"><div class="ai-notes-title">VESPR Note</div><div style="font-size:13px;">' + evt.aiNote + '</div></div></div>' : ''}
+    <div class="modal-section">
+      <div class="modal-section-title">Attendees</div>
+      ${attendeeList}
+    </div>
+    <div class="modal-actions-row">
+      ${evt.canReschedule && !evt.cancelled ? '<button class="modal-btn" onclick="closeModal(\'eventModal\');openRescheduleModal(' + evt.id + ')">&#128197; Reschedule with AI</button>' : ''}
+      ${evt.canReschedule && !evt.cancelled ? '<button class="modal-btn danger" onclick="cancelEvent(' + evt.id + ')">Cancel Event</button>' : ''}
+      ${!evt.canReschedule ? '<div style="font-size:12px;color:var(--text3);padding:8px;text-align:center;width:100%;">This event cannot be rescheduled</div>' : ''}
+      ${evt.cancelled ? '<div style="font-size:12px;color:var(--red);padding:8px;text-align:center;width:100%;">This event has been cancelled</div>' : ''}
+    </div>`;
+  openModal('eventModal');
+}
+
+function openRescheduleModal(id) {
+  currentRescheduleEvent = calEvents.find(e => e.id === id);
+  if (!currentRescheduleEvent) return;
+  document.getElementById('reschedEventInfo').innerHTML = `
+    <div class="modal-event-title">${currentRescheduleEvent.title}</div>
+    <div class="modal-event-detail">&#128336; ${currentRescheduleEvent.time} &middot; ${currentRescheduleEvent.location || 'No location'}</div>`;
+  document.getElementById('reschedAISection').style.display = 'none';
+  document.getElementById('reschedAISuggestion').style.display = 'none';
+  document.getElementById('reschedAIWorking').style.display = 'flex';
+  document.querySelectorAll('.reason-chip').forEach(c => c.classList.remove('selected'));
+  openModal('rescheduleModal');
+}
+
+function selectReason(chip) {
+  document.querySelectorAll('.reason-chip').forEach(c => c.classList.remove('selected'));
+  chip.classList.add('selected');
+  const reason = chip.textContent;
+  const section = document.getElementById('reschedAISection');
+  section.style.display = 'block';
+  document.getElementById('reschedAIWorking').style.display = 'flex';
+  document.getElementById('reschedAISuggestion').style.display = 'none';
+
+  setTimeout(() => {
+    document.getElementById('reschedAIWorking').style.display = 'none';
+    const sug = document.getElementById('reschedAISuggestion');
+    sug.style.display = 'block';
+    const newTimes = [
+      {day:"Tomorrow, April 1", time:"10:30 - 11:00 AM", note:"Open slot, no conflicts"},
+      {day:"Wednesday, April 2", time:"2:00 - 2:30 PM", note:"After your focus block"},
+      {day:"Thursday, April 3", time:"9:30 - 10:00 AM", note:"Right after standup"}
+    ];
+    sug.innerHTML = `
+      <div class="ai-notes" style="padding:14px 16px;margin-bottom:14px;">
+        <div class="ai-notes-title">VESPR Recommendation</div>
+        <div style="font-size:13px;">Based on "${reason}", I recommend moving this to tomorrow morning. I'll notify all attendees and update your calendar automatically.</div>
+      </div>
+      <div class="modal-section-title">Pick a new time</div>
+      ${newTimes.map((t, i) => `
+        <div class="time-slot" onclick="selectReschedTime(this, ${i})">
+          <div class="time-slot-radio"></div>
+          <div class="time-slot-info">
+            <div class="time-slot-day">${t.day} &middot; ${t.time}</div>
+            <div class="time-slot-detail">${t.note}</div>
+          </div>
+        </div>`).join('')}
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px;padding:14px;" onclick="confirmReschedule()">Confirm Reschedule</button>`;
+  }, 1500);
+}
+
+function selectReschedTime(el, idx) {
+  document.querySelectorAll('#reschedAISuggestion .time-slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('.time-slot-radio').innerHTML = '&#10003;';
+}
+
+function confirmReschedule() {
+  if (!currentRescheduleEvent) return;
+  const selected = document.querySelector('#reschedAISuggestion .time-slot.selected');
+  if (!selected) { showToast('Select a time first'); return; }
+  const newTime = selected.querySelector('.time-slot-day').textContent;
+  currentRescheduleEvent.cancelled = true;
+  currentRescheduleEvent.cancelReason = 'Rescheduled to ' + newTime;
+  closeModal('rescheduleModal');
+  renderCalendar();
+  showToast('Rescheduled. Attendees notified. New block created for ' + newTime);
+}
+
+function cancelEvent(id) {
+  const evt = calEvents.find(e => e.id === id);
+  if (!evt) return;
+  evt.cancelled = true;
+  evt.cancelReason = 'Cancelled by you';
+  closeModal('eventModal');
+  renderCalendar();
+  showToast(evt.title + ' cancelled. Attendees notified. Time block freed up.');
+}
+
+// ── Schedule Meeting ──
+const contacts = [
+  {name:"Mike Torres", email:"mike@motorcityinspections.com", company:"Motor City Inspections", role:"Lead Inspector"},
+  {name:"Lisa Park", email:"lisa@capitallendinggroup.com", company:"Capital Lending Group", role:"DSCR Loan Officer"},
+  {name:"Jason Rivera", email:"jason@riveradigital.com", company:"Rivera Digital", role:"AI Client"},
+  {name:"Chris Baldwin", email:"chris@baldwincap.com", company:"Baldwin Capital", role:"Investor Prospect"},
+  {name:"Samantha Wells", email:"sam@wellsmedia.co", company:"Wells Media Agency", role:"AI Prospect"},
+  {name:"David Park", email:"david@motorcityinvest.com", company:"Motor City Investments", role:"RE Partner"},
+  {name:"Tyler Morris", email:"tyler@vespr.ai", company:"VESPR", role:"Content Lead"},
+  {name:"Brian Cho", email:"brian@chogroup.com", company:"Cho Group Real Estate", role:"Investor"},
+  {name:"Amanda Foster", email:"amanda@fosterventures.com", company:"Foster Ventures", role:"Investor"},
+  {name:"Marcus Reid", email:"marcus@reidventures.com", company:"Reid Ventures", role:"Investor"},
+  {name:"Ryan Torres", email:"ryan@meridiantech.io", company:"Meridian Corp", role:"AI Client (retainer)"},
+  {name:"Kevin Liu", email:"kevin@ironpeak.fit", company:"Iron Peak Fitness", role:"AI Client"},
+];
+
+let foundContact = null;
+let schedSlots = [];
+
+function openScheduleModal() {
+  document.getElementById('schedNameInput').value = '';
+  document.getElementById('schedTopicInput').value = '';
+  document.getElementById('schedResults').style.display = 'none';
+  document.getElementById('schedAIWorking').style.display = 'none';
+  document.getElementById('schedEmailSection').style.display = 'none';
+  const cb = document.getElementById('contactConfirmBox');
+  if (cb) cb.style.display = 'none';
+  foundContact = null;
+  document.getElementById('schedFindBtn').disabled = true;
+  openModal('scheduleModal');
+  setTimeout(() => document.getElementById('schedNameInput').focus(), 200);
+}
+
+document.addEventListener('input', (e) => {
+  if (e.target.id !== 'schedNameInput') return;
+  const val = e.target.value.trim().toLowerCase();
+  const cb = document.getElementById('contactConfirmBox');
+  if (!val || val.length < 2) {
+    if (cb) cb.style.display = 'none';
+    foundContact = null;
+    document.getElementById('schedFindBtn').disabled = true;
+    document.getElementById('schedResults').style.display = 'none';
+    return;
+  }
+  const match = contacts.find(c => c.name.toLowerCase().includes(val));
+  if (match) {
+    foundContact = match;
+    cb.style.display = 'block';
+    cb.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--green-dim);border:1px solid rgba(0,230,118,.2);border-radius:12px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--accent-dim);color:var(--accent2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">${match.name.split(' ').map(w=>w[0]).join('')}</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:600;color:var(--text);">${match.name}</div>
+          <div style="font-size:11px;color:var(--text2);">${match.role} at ${match.company} &middot; ${match.email}</div>
+        </div>
+        <div style="color:var(--green);font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;">&#10003; Contact Found</div>
+      </div>`;
+    document.getElementById('schedFindBtn').disabled = false;
+  } else {
+    cb.style.display = 'block';
+    cb.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--orange-dim);border:1px solid rgba(255,145,0,.2);border-radius:12px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--orange-dim);color:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">?</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--text);">No contact found for "${e.target.value.trim()}"</div>
+          <div style="font-size:11px;color:var(--text2);">Try a different name or check spelling</div>
+        </div>
+      </div>`;
+    foundContact = null;
+    document.getElementById('schedFindBtn').disabled = true;
+    document.getElementById('schedResults').style.display = 'none';
+  }
+});
+
+function selectDuration(chip, mins) {
+  document.querySelectorAll('.dur-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  selectedScheduleDuration = mins;
+}
+
+function findTimes() {
+  if (!foundContact) { showToast('No contact selected'); return; }
+  document.getElementById('schedFindBtn').disabled = true;
+  document.getElementById('schedResults').style.display = 'none';
+  document.getElementById('schedAIWorking').style.display = 'block';
+
+  setTimeout(() => {
+    document.getElementById('schedAIWorking').style.display = 'none';
+    document.getElementById('schedResults').style.display = 'block';
+    document.getElementById('schedFindBtn').disabled = false;
+
+    const dur = selectedScheduleDuration;
+    const endMin = dur % 60;
+    const endStr = endMin === 0 ? '00' : String(endMin).padStart(2,'0');
+    schedSlots = [
+      {day:"Today, March 31", time:`3:00 - 3:${endStr} PM`, note:"After your content block - same day turnaround"},
+      {day:"Tomorrow, April 1", time:`11:00 - 11:${endStr} AM`, note:"Open morning slot - no conflicts detected"},
+      {day:"Wednesday, April 2", time:`10:00 - 10:${endStr} AM`, note:"Clean calendar - ideal for focused discussion"}
+    ];
+    const slotsHtml = schedSlots.map((s, i) => `
+      <div class="time-slot" style="pointer-events:none;opacity:.85;">
+        <div class="time-slot-radio" style="border-color:var(--green);background:var(--green);color:#000;font-size:10px;font-weight:900;">&#10003;</div>
+        <div class="time-slot-info">
+          <div class="time-slot-day">${s.day} &middot; ${s.time}</div>
+          <div class="time-slot-detail">${s.note}</div>
+        </div>
+      </div>`).join('');
+    document.getElementById('schedTimeSlots').innerHTML = `
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">All 3 times will be sent to <strong style="color:var(--text);">${foundContact.name}</strong> so they can pick the one that works best.</div>
+      ${slotsHtml}`;
+    // Auto-show email preview
+    showScheduleEmailPreview();
+  }, 1800);
+}
+
+function showScheduleEmailPreview() {
+  if (!foundContact || schedSlots.length === 0) return;
+  const topic = document.getElementById('schedTopicInput').value.trim() || 'Sync call';
+  const firstName = foundContact.name.split(' ')[0];
+  document.getElementById('schedEmailSection').style.display = 'block';
+  document.getElementById('schedEmailPreview').innerHTML = `
+    <strong>To:</strong> ${foundContact.name} &lt;${foundContact.email}&gt;<br>
+    <strong>Subject:</strong> Meeting with Luke Fontaine - ${topic}<br><br>
+    Hi ${firstName},<br><br>
+    Luke would like to schedule a ${selectedScheduleDuration}-minute meeting with you to discuss <strong>${topic}</strong>.<br><br>
+    Here are 3 available times. Please pick the one that works best for you:<br><br>
+    <div style="margin:8px 0;">
+      ${schedSlots.map((s, i) => `<div style="padding:8px 12px;margin:4px 0;background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.12);border-radius:8px;">
+        <strong>Option ${i+1}:</strong> ${s.day}, ${s.time}
+      </div>`).join('')}
+    </div><br>
+    Just reply with the option number that works, and I'll confirm everything and send a calendar invite with a Zoom link.<br><br>
+    Best,<br>
+    VESPR AI - Executive Assistant to Luke Fontaine`;
+}
+
+function sendScheduleEmail() {
+  if (!foundContact) return;
+  closeModal('scheduleModal');
+  showToast('3 time options sent to ' + foundContact.name + ' at ' + foundContact.email + '. Calendar holds created. Waiting for their pick.');
+}
+
+// ── Modal Helpers ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(ov => {
+  ov.addEventListener('click', (e) => { if (e.target === ov) ov.classList.remove('open'); });
+});
+
+// ── Message Data ──
+const messages = [
+  {
+    id:0, from:"Mike Torres", initials:"MT", source:"sms",
+    color:"var(--green-dim)", textColor:"var(--imsg)",
+    priority:"urgent", urgency:95, time:"5:48 AM",
+    subject:"Inspection complete on 14823 Muirland St",
+    preview:"Luke - inspection is done on Muirland. Found a foundation repair that could be great leverage to renegotiate the price. Full report attached.",
+    fullMessage:"Luke - just wrapped the inspection on 14823 Muirland St. Good news - everything else is solid. Roof, electrical, plumbing all check out.\n\nOne thing to note: there's a foundation crack on the east basement wall with some water staining. Here's the breakdown:\n\n- Foundation wall crack with 1/4 inch displacement\n- Water staining and efflorescence on the interior\n- Minor floor settling in the northeast corner\n- Everything else is clean - strong bones on this property\n\nRepair estimate would be somewhere between $8K-$15K. I can get you a quote from my foundation guy by end of day.\n\nThis could be solid leverage to renegotiate the price down. I've seen deals like this where buyers pull $15-20K off the price and come out way ahead after the fix.\n\nLet me know how you want to play it.\n\nMike",
+    aiNotes:[
+      "Foundation repair estimate $8K-$15K - strong leverage to renegotiate $15-20K off",
+      "Property was under contract at $72K - even with repair, numbers still work well below ARV",
+      "Rest of the inspection is clean - the property has solid fundamentals",
+      "Recommend: use the repair estimate to renegotiate, could increase your cash-on-cash significantly",
+      "Get the repair quote first, then present it to the seller as your negotiating tool"
+    ],
+    urgencyReason:"Closing is next week. Foundation repair gives you leverage to renegotiate $15-20K off the price. Move fast to lock in a better deal.",
+    draft:"Mike - appreciate the thorough report. Send me the full write-up with photos and get me that repair estimate from your foundation guy today. I'm going to use this as leverage to renegotiate the price down. Good find - this could save us $15-20K on the deal."
+  },
+  {
+    id:1, from:"Lisa Park", initials:"LP", source:"email",
+    color:"var(--blue-dim)", textColor:"var(--blue)",
+    priority:"urgent", urgency:92, time:"5:15 AM",
+    subject:"DSCR loan approved - Birwood portfolio - docs ready",
+    preview:"Great news - your DSCR loan for the Birwood portfolio has been approved at 7.1%. Docs need your signature today to lock the rate.",
+    fullMessage:"Hi Luke,\n\nGreat news - your DSCR loan application for the Birwood portfolio has been approved.\n\nLoan Details:\n- Loan Amount: $287,000\n- Rate: 7.1% fixed (30-year)\n- DSCR Ratio: 1.38\n- LTV: 72%\n- Properties Covered: 4 (14157, 14163, 14171, 14189 Birwood St)\n- Combined Monthly Rent: $5,200\n- Monthly Payment (P&I): $1,928\n- Monthly Cash Flow After Debt Service: $3,272\n\nThe rate lock expires at 5pm ET today. I need your signature on the loan documents before then or we lose this rate. The next lock would likely be 7.3-7.5% based on current market movement.\n\nI've attached the full doc package. Please review and sign via DocuSign at your earliest convenience.\n\nLet me know if you have any questions.\n\nBest,\nLisa Park\nCapital Lending Group",
+    aiNotes:[
+      "Strong DSCR ratio at 1.38 - well above the 1.25 minimum threshold",
+      "Rate lock expires 5pm today - this is time-sensitive, don't let it slip",
+      "Monthly cash flow of $3,272 across 4 properties is solid for this portfolio",
+      "7.1% is competitive for DSCR loans in the current market - rates trending up",
+      "Recommend: sign immediately, the 0.2-0.4% rate increase on a relock costs ~$50/month"
+    ],
+    urgencyReason:"Rate lock expires at 5pm today. 7.1% is competitive - relock would be 7.3-7.5%. Signature required on loan docs for 4-property Birwood portfolio.",
+    draft:"Lisa - great news on the 7.1% approval. I'll review and sign the docs this morning. Confirm the rate lock deadline so I know my hard cutoff. Also, can you send the final amortization schedule for all 4 properties? Want to make sure the cash flow numbers still work at this rate."
+  },
+  {
+    id:2, from:"Jason Rivera", initials:"JR", source:"whatsapp",
+    color:"rgba(37,211,102,.1)", textColor:"var(--whatsapp)",
+    priority:"urgent", urgency:90, time:"5:31 AM",
+    subject:"AI lead gen agent needs a quick tune-up",
+    preview:"Luke my lead gen agent looks like it needs a quick update - traffic is hitting the page but leads aren't coming through. Can we get this dialed in today?",
+    fullMessage:"Hey Luke - my lead gen agent looks like it needs a quick tune-up. I checked the dashboard this morning and it seems like it stopped capturing leads around 2am.\n\nHere's what I'm seeing:\n- The agent isn't responding to new incoming leads\n- My landing page is still getting solid traffic (about 40 visitors overnight)\n- Looks like there might be a timeout or API thing happening\n- Dashboard is still showing all my historical data fine\n\nHonestly the system has been incredible - this is the first time anything has come up. I know you'll get it sorted fast.\n\nI'm available for a screen share whenever you're ready. Would love to also talk about adding some kind of monitoring so we can stay ahead of stuff like this.\n\nThanks,\nJason",
+    aiNotes:[
+      "First issue in months - overall system reliability has been excellent",
+      "Likely a simple API rate limit or webhook timeout - quick fix",
+      "~40 visitors overnight shows strong traffic - agent will capture them once back up",
+      "$5K/month retainer client with high satisfaction - fast turnaround deepens the relationship",
+      "Recommend: fix the agent, add proactive monitoring, use this as an upsell for premium support tier"
+    ],
+    urgencyReason:"$5K/month retainer client requesting a quick tune-up. First issue in months - fast turnaround is a great opportunity to strengthen the relationship and add monitoring.",
+    draft:"Jason - I'm on it. Pulling up the agent logs now and will have everything tuned up within the hour. I'm also adding proactive monitoring so we stay ahead of anything like this going forward. Expect a status update from me by 9am."
+  },
+  {
+    id:3, from:"Chris Baldwin", initials:"CB", source:"email",
+    color:"var(--blue-dim)", textColor:"var(--blue)",
+    priority:"action", urgency:68, time:"6:12 AM",
+    subject:"Interested in Detroit Section 8 - $200K to deploy",
+    preview:"Luke, I've been researching Section 8 investing in Detroit and your Buyers Club keeps coming up. I have $200K ready to deploy and would love to discuss.",
+    fullMessage:"Hi Luke,\n\nI've been researching Section 8 investing in Detroit for the past few months and your name keeps coming up. Several investors in my network have mentioned your Buyers Club and the deal flow you provide.\n\nA bit about me:\n- I run Baldwin Capital, a small family office focused on cash-flow real estate\n- Currently hold 12 units across Cleveland and Indianapolis\n- Looking to diversify into Detroit for the higher cap rates\n- I have $200K ready to deploy in Q2 2026\n\nI'm particularly interested in:\n1. How your Buyers Club sources off-market deals\n2. Your property management setup for Section 8 tenants\n3. Average returns your investors are seeing\n4. The inspection and rehab process you use\n\nWould love to schedule a discovery call to learn more. I'm flexible on timing.\n\nBest regards,\nChris Baldwin\nBaldwin Capital",
+    aiNotes:[
+      "$200K deployment = 3-4 properties at your average Detroit price point",
+      "Experienced investor with 12 units - not a first-timer, knows the game",
+      "Already has social proof from your existing investors - warm lead",
+      "His questions are standard due diligence - prep your Buyers Club deck",
+      "Recommend: take the call, send the Buyers Club deck, move fast while he's hot"
+    ],
+    urgencyReason:"Serious investor with $200K ready to deploy in Q2. Experienced, well-connected, and referred by your network. Respond today to maintain momentum.",
+    draft:"Chris - appreciate the interest. $200K gets you into some strong cash-flowing Section 8 properties in Detroit. I have a discovery call slot open at 11am today - I'll walk you through the Buyers Club model, current deal flow, and projected returns. Sending you a calendar invite now."
+  },
+  {
+    id:4, from:"Samantha Wells", initials:"SW", source:"whatsapp",
+    color:"rgba(37,211,102,.1)", textColor:"var(--whatsapp)",
+    priority:"action", urgency:55, time:"4:55 AM",
+    subject:"Want to see your AI agent buildout for agencies",
+    preview:"Hey Luke - I run an agency doing $80K/month and I'm spending $12K/month on VAs for stuff that should be automated. Heard you build AI agents for this. Can I see a demo?",
+    fullMessage:"Hey Luke!\n\nI run Wells Media Agency - we do social media management and paid ads for about 30 clients. We're at $80K/month in revenue but my margins are getting crushed by labor costs.\n\nRight now I'm spending $12K/month on VAs for:\n- Client onboarding and account setup\n- Monthly reporting and analytics pulls\n- Lead qualification and follow-up sequences\n- Content scheduling and posting\n- Invoice chasing and payment reminders\n\nA friend of mine (Ryan Torres at Meridian) said you built AI agents that replaced most of his manual processes and saved him like $8K/month. That's exactly what I need.\n\nCan we do a demo call? I want to see what this looks like for an agency like mine. I'm ready to move fast if the ROI makes sense.\n\nSam",
+    aiNotes:[
+      "$12K/month in VA costs is a massive automation opportunity",
+      "Her 5 use cases are all proven automations you've built before",
+      "Referred by Ryan Torres (Meridian Corp) - your $7.5K/month retainer client",
+      "At $80K/month revenue, she can afford a $5-7.5K/month retainer easily",
+      "Recommend: show the Meridian case study on the demo call, close same week"
+    ],
+    urgencyReason:"Agency owner spending $12K/month on automatable tasks. Warm referral from existing retainer client. High close probability if you demo this week.",
+    draft:"Samantha - $12K/month on VAs for tasks AI can handle is exactly what we fix. I'll show you exactly how we'd automate your client onboarding, reporting, and lead qual. Demo call is set for 2pm today - sending you the link now. Come with your top 3 bottlenecks and I'll map out the solution live."
+  },
+  {
+    id:5, from:"David Park", initials:"DP", source:"sms",
+    color:"var(--green-dim)", textColor:"var(--imsg)",
+    priority:"action", urgency:45, time:"4:30 AM",
+    subject:"Found 3 new off-market deals in Detroit",
+    preview:"Luke - got 3 new off-market properties from my wholesaler contact. All in the Section 8 buy box. Numbers look solid. Can I walk them today and send you video?",
+    fullMessage:"Luke - my wholesaler contact just sent over 3 new off-market deals. All in our target neighborhoods.\n\nProperty 1: 15847 Greenview - 3bed/1bath - asking $58K\n- Section 8 rent estimate: $1,150/mo\n- Needs about $10K in cosmetic rehab\n- Estimated cap rate: 15.1%\n\nProperty 2: 12934 Coyle - 4bed/2bath - asking $74K\n- Section 8 rent estimate: $1,450/mo\n- Needs new roof ($8K) and some updating\n- Estimated cap rate: 13.8%\n\nProperty 3: 19472 Stahelin - 3bed/1bath - asking $52K\n- Section 8 rent estimate: $1,100/mo\n- Mostly turnkey, minor cosmetic work\n- Estimated cap rate: 16.2%\n\nAll three are in solid Section 8 neighborhoods with good tenant demand. I can meet you at 4pm to walk them if you're free.\n\nDavid",
+    aiNotes:[
+      "All 3 properties are above your 12% cap rate minimum - strong deals",
+      "Combined investment of ~$184K plus rehab - could allocate to Chris Baldwin's $200K",
+      "Property 3 (Stahelin) is the standout - 16.2% cap rate, nearly turnkey",
+      "David's wholesaler contact has been reliable - last 5 deals all closed",
+      "Recommend: have David walk all 3, review video, run full underwriting, move on the best 2"
+    ],
+    urgencyReason:"Off-market deals move fast. 3 properties in the Section 8 buy box with strong cap rates. Have David walk them today before another buyer gets first look.",
+    draft:"David - send me the addresses and asking prices. I'll run quick numbers before you walk them at 4. Shoot me video walkthroughs of each one. If the cap rates are above 12% and they're in our target neighborhoods, we move fast."
+  },
+  {
+    id:6, from:"Stripe", initials:"ST", source:"slack",
+    color:"var(--pink-dim)", textColor:"var(--slack)",
+    priority:"fyi", urgency:15, time:"3:47 AM",
+    subject:"Payment received - Meridian Corp - $7,500",
+    preview:"Monthly retainer payment of $7,500 received from Meridian Corp for AI agent build and maintenance.",
+    fullMessage:"#payments\n\nPayment received via Stripe\n\nClient: Meridian Corp (Ryan Torres)\nAmount: $7,500.00\nDescription: Monthly AI Agent Retainer - April 2026\nStatus: Succeeded\nPayment Method: Visa ending in 4242\n\nThis is month 4 of the 12-month retainer agreement.\n\nRecurring payment schedule:\n- Next payment: May 1, 2026\n- Remaining on contract: 8 months\n- Total contract value: $90,000\n\nAll payments to date have been on time. All on track.",
+    aiNotes:[
+      "$7,500/month x 8 remaining months = $60K in contracted recurring revenue",
+      "Meridian is your highest-paying AI retainer client - keep them happy",
+      "4 months in, payments always on time - strong client relationship",
+      "Ryan Torres referred Samantha Wells to you - he's a referral source",
+      "Recommend: no action needed, just note the revenue confirmation"
+    ],
+    urgencyReason:"Informational only. Recurring retainer payment confirmed. No action required.",
+    draft:"Noted - thanks for the confirmation. Meridian retainer is tracking well. Will keep you posted on the account."
+  },
+  {
+    id:7, from:"Tyler Morris", initials:"TM", source:"slack",
+    color:"var(--pink-dim)", textColor:"var(--slack)",
+    priority:"fyi", urgency:12, time:"3:00 AM",
+    subject:"Blog post on AI agents for real estate - 2x traffic",
+    preview:"New blog post on AI agents for real estate investors is pulling 2x our normal traffic. Strong SEO performance and email signups trending up.",
+    fullMessage:"#content\n\nNew blog post went live at midnight - 'How AI Agents Are Replacing VAs for Real Estate Investors'\n\nThis one is performing way above average. Current metrics (4 hours in):\n- 2,847 unique visitors (2x our daily average)\n- Avg time on page: 4:12\n- Email signups from post: 94\n- Social shares: 67\n- Top traffic source: organic search (52%)\n\nThe SEO optimizations are clearly working. We're ranking on page 1 for 'AI agents real estate' already.\n\nThis is a perfect cross-sell piece - it bridges both of Luke's businesses. RE investors reading about AI automation, AI prospects seeing real estate use cases.\n\nFull dashboard: [link]\n\nWill send end-of-day report with final numbers at 6pm.",
+    aiNotes:[
+      "Blog post bridging both businesses - great for cross-selling RE and AI services",
+      "2x traffic with strong time-on-page means the content is resonating",
+      "94 email signups in 4 hours - potential Buyers Club and AI agency leads",
+      "No action needed from you - Tyler is tracking performance",
+      "Recommend: repurpose this into an Instagram carousel for your 3pm content block"
+    ],
+    urgencyReason:"Informational only. Content performance update. No action required. EOD report coming at 6pm.",
+    draft:"Tyler - incredible numbers. The RE + AI crossover angle is clearly hitting. Let's repurpose this into a carousel for Instagram during my content block today. Send me the EOD report and we'll discuss scaling this format in standup tomorrow."
+  }
+];
+
+// ── Render Inbox ──
+function renderInbox(filter='all') {
+  const list = document.getElementById('inboxList');
+  list.innerHTML = '';
+  const filtered = filter === 'all' ? messages : messages.filter(m => m.priority === filter);
+  filtered.forEach((m, i) => {
+    const urgColor = m.urgency >= 80 ? 'var(--red)' : m.urgency >= 50 ? 'var(--orange)' : 'var(--accent)';
+    const el = document.createElement('div');
+    el.className = 'msg-card' + (m.priority === 'urgent' ? ' unread' : '');
+    el.onclick = () => selectMessage(m.id);
+    el.id = 'msg-card-' + m.id;
+    el.innerHTML = `
+      <div class="msg-top">
+        <div class="msg-avatar" style="background:${m.color};color:${m.textColor};">${m.initials}</div>
+        <div class="msg-sender">${m.from}</div>
+        <span class="msg-source src-${m.source}">${m.source}</span>
+        <div class="msg-time">${m.time}</div>
+      </div>
+      <div class="msg-preview"><strong>${m.subject}</strong> - ${m.preview}</div>
+      <div class="msg-footer">
+        <div class="urgency-mini" style="color:${urgColor};">
+          <div class="urgency-bar-mini"><div class="urgency-fill-mini" style="width:${m.urgency}%;background:${urgColor};"></div></div>
+          ${m.urgency}
+        </div>
+        <span class="tag tag-${m.priority}" style="font-size:9px;padding:2px 8px;">${m.priority.toUpperCase()}</span>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+// ── Select Message ──
+function selectMessage(id) {
+  // Make sure we're on inbox panel
+  const m = messages.find(msg => msg.id === id);
+  if (!m) return;
+
+  // Highlight in list
+  document.querySelectorAll('.msg-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById('msg-card-' + id);
+  if (card) card.classList.add('active');
+
+  const urgColor = m.urgency >= 80 ? 'var(--red)' : m.urgency >= 50 ? 'var(--orange)' : 'var(--accent)';
+  const urgLabel = m.urgency >= 80 ? 'High Urgency' : m.urgency >= 50 ? 'Medium Urgency' : 'Low Urgency';
+  const circumference = 2 * Math.PI * 27;
+  const offset = circumference - (m.urgency / 100) * circumference;
+
+  const pane = document.getElementById('detailPane');
+  pane.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-from">
+        <div class="detail-avatar" style="background:${m.color};color:${m.textColor};">${m.initials}</div>
+        <div>
+          <div class="detail-name">${m.from}</div>
+          <div class="detail-meta">${m.time} &middot; via ${m.source.charAt(0).toUpperCase() + m.source.slice(1)} &middot; ${m.subject}</div>
+        </div>
+      </div>
+      <div class="detail-tags">
+        <span class="tag tag-${m.priority}">${m.priority.toUpperCase()}</span>
+        <span class="msg-source src-${m.source}" style="font-size:11px;padding:4px 10px;">${m.source.toUpperCase()}</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <div class="detail-section-title">Original Message</div>
+        <div class="detail-message-text" style="white-space:pre-line;">${m.fullMessage}</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Urgency Assessment</div>
+        <div class="urgency-meter">
+          <div class="urgency-gauge">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle class="urgency-gauge-bg" cx="32" cy="32" r="27"/>
+              <circle class="urgency-gauge-fill" cx="32" cy="32" r="27"
+                stroke="${urgColor}"
+                stroke-dasharray="${circumference}"
+                stroke-dashoffset="${offset}"/>
+            </svg>
+            <div class="urgency-number" style="color:${urgColor};">${m.urgency}</div>
+          </div>
+          <div class="urgency-info">
+            <div class="urgency-label" style="color:${urgColor};">${urgLabel}</div>
+            <div class="urgency-reason">${m.urgencyReason}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">&#9733; AI Analysis &amp; Notes</div>
+        <div class="ai-notes">
+          <div class="ai-notes-title">&#9733; VESPR Intelligence</div>
+          <div class="ai-notes-content">
+            <ul>${m.aiNotes.map(n => '<li>' + n + '</li>').join('')}</ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="draft-section">
+      <div class="draft-label">&#9733; AI Drafted Response</div>
+      <textarea class="draft-textarea" id="draftText-${m.id}">${m.draft}</textarea>
+      <div class="draft-actions">
+        <button class="btn btn-primary" onclick="sendDraft(${m.id})">&#10003; Approve &amp; Send</button>
+        <button class="btn btn-secondary" onclick="regenerateDraft(${m.id})">&#8635; Regenerate</button>
+        <button class="btn btn-ghost">&#128203; Copy</button>
+        <div class="draft-status">Draft auto-saved</div>
+      </div>
+    </div>`;
+}
+
+// ── Navigation ──
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const titles = {briefing:'Daily Briefing',inbox:'Unified Inbox',calendar:'Calendar',tasks:'Tasks & Delegations'};
+  document.getElementById('topbarTitle').textContent = titles[name] || name;
+
+  // Set active nav
+  const navItems = document.querySelectorAll('.nav-item');
+  const navMap = {briefing:0,inbox:1,calendar:2,tasks:3};
+  if (navMap[name] !== undefined) navItems[navMap[name]].classList.add('active');
+}
+
+function filterMessages(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderInbox(filter);
+}
+
+function filterSource(source) {
+  showPanel('inbox');
+  const list = document.getElementById('inboxList');
+  list.innerHTML = '';
+  const filtered = messages.filter(m => m.source === source);
+  filtered.forEach(m => {
+    const urgColor = m.urgency >= 80 ? 'var(--red)' : m.urgency >= 50 ? 'var(--orange)' : 'var(--accent)';
+    const el = document.createElement('div');
+    el.className = 'msg-card' + (m.priority === 'urgent' ? ' unread' : '');
+    el.onclick = () => selectMessage(m.id);
+    el.id = 'msg-card-' + m.id;
+    el.innerHTML = `
+      <div class="msg-top">
+        <div class="msg-avatar" style="background:${m.color};color:${m.textColor};">${m.initials}</div>
+        <div class="msg-sender">${m.from}</div>
+        <span class="msg-source src-${m.source}">${m.source}</span>
+        <div class="msg-time">${m.time}</div>
+      </div>
+      <div class="msg-preview"><strong>${m.subject}</strong> - ${m.preview}</div>
+      <div class="msg-footer">
+        <div class="urgency-mini" style="color:${urgColor};">
+          <div class="urgency-bar-mini"><div class="urgency-fill-mini" style="width:${m.urgency}%;background:${urgColor};"></div></div>
+          ${m.urgency}
+        </div>
+        <span class="tag tag-${m.priority}" style="font-size:9px;padding:2px 8px;">${m.priority.toUpperCase()}</span>
+      </div>`;
+    list.appendChild(el);
+  });
+  // Update filter buttons
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+}
+
+// ── Actions ──
+function sendDraft(id) {
+  const m = messages.find(msg => msg.id === id);
+  showToast('Reply sent to ' + m.from + ' via ' + m.source);
+}
+
+function sendBrief(btn) {
+  const card = btn.closest('.brief-item');
+  const name = card.querySelector('.brief-item-from').textContent;
+  btn.innerHTML = '&#10003; Sent';
+  btn.style.background = 'var(--green-dim)';
+  btn.style.color = 'var(--green)';
+  btn.disabled = true;
+  card.style.opacity = '0.6';
+  showToast('Reply sent to ' + name);
+}
+
+function regenerateDraft(id) {
+  const ta = document.getElementById('draftText-' + id);
+  ta.style.opacity = '0.5';
+  ta.value = 'Regenerating...';
+  setTimeout(() => {
+    ta.value = messages.find(m => m.id === id).draft + '\n\nP.S. Let me know if you need anything else from my end.';
+    ta.style.opacity = '1';
+  }, 800);
+}
+
+function toggleTask(el) {
+  if (el.classList.contains('checked')) {
+    el.classList.remove('checked');
+    el.innerHTML = '';
+  } else {
+    el.classList.add('checked');
+    el.innerHTML = '&#10003;';
+    showToast('Task completed');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = '&#10003; ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Clock ──
+function updateClock() {
+  const d = new Date();
+  let h = d.getHours(), m = d.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('liveClock').textContent = h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+}
+setInterval(updateClock, 30000);
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if (e.key === '1') showPanel('briefing');
+  if (e.key === '2') showPanel('inbox');
+  if (e.key === '3') showPanel('calendar');
+  if (e.key === '4') showPanel('tasks');
+});
+
+// ── Go to conversation from tasks ──
+function goToConvo(msgId) {
+  showPanel('inbox');
+  renderInbox('all');
+  setTimeout(() => selectMessage(msgId), 150);
+}
+
+// ── Init ──
+renderInbox();
+renderCalendar();
+</script>
+</body>
+</html>
